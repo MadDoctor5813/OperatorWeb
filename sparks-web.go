@@ -82,11 +82,6 @@ func main() {
     router.Post("/insertEmergencyJSON/:emergencyId", insertEmergencyJSON)
     router.Post("/updateEmergencyJSON/:emergencyId", updateEmergencyJSON)
     router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
- 
-    // user
-    router.Post("/insertUserJSON", insertUserJSON)
-    router.Post("/updateUserJSON", updateUserJSON)
-    router.Delete("/deleteUserJSON", deleteUserJSON)
     
     // view
     router.Get("/login", viewLogin)
