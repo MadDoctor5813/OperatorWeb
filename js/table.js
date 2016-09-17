@@ -14,7 +14,7 @@ function initDataTable(json) {
 		'ajax': function(data, callback, settings) {
 			var prevData = $('#data-table').data('data');
 
-			clearContainer();
+			clearTable();
 			callback(json);
 
 			if ($('body').hasClass('initialized')) { // same page
@@ -34,7 +34,6 @@ function initDataTable(json) {
 				else { // yes data
 					console.log('new page, yes data');
 				}
-
 
 				$('body').addClass('initialized');
 				$('#data-table').data('data', data);
@@ -95,4 +94,13 @@ function initDataTable(json) {
             });
         }
 	});
+}
+
+function clearTable() {    
+    if ($('body').data('autosave-timer')) {
+        clearInterval($('body').data('autosave-timer'));
+        $('body').removeData('autosave-timer');
+    }
+
+    $('#data-table tbody').empty();
 }

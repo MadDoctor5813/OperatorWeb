@@ -129,12 +129,3 @@ function displayAlertMessage(message) {
     
     $('body').append(alertMessageHTML);
 }
-
-function clearContainer() {    
-    if ($('body').data('autosave-timer')) {
-        clearInterval($('body').data('autosave-timer'));
-        $('body').removeData('autosave-timer');
-    }
-
-    $('#data-table tbody').empty();
-}
