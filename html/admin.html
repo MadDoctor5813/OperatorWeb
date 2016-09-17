@@ -1,0 +1,106 @@
+{{define "my-template"}}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+{{template "head" .}}
+
+<body>
+
+	<nav id="sidebar-wrapper" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="sidebar-header">
+		    <i class="fa fa-chevron-circle-left" data-uw-action="sidebar-close" data-uw-target="sidebar-wrapper"></i>
+		</div>
+
+		<ul class="sidebar-nav nav">
+		    <li class="pending">
+		        <a href="/pending"><i class="fa fa-circle"></i>Pending</a>
+		    </li>
+		    <li class="in-progress">
+		        <a href="/in-progress"><i class="fa fa-circle"></i>In Progress</a>
+		    </li>
+		    <li class="complete">
+		        <a href="/complete"><i class="fa fa-circle"></i>Complete</a>
+		    </li>
+		    <li class="archives">
+		        <a href="/archives"><i class="fa fa-archive"></i>Archives</a>
+		    </li>
+		    <li class="trash">
+		        <a href="/trash"><i class="fa fa-trash-o"></i>Trash</a>
+		    </li>
+		    <li class="sign-out">
+		        <a href="/sign-out"><i class="fa fa-sign-out"></i>Sign Out</a>
+		    </li>
+		</ul>
+
+		<div class="sidebar-footer text-center">
+		    <div class="logo">Operator</div>
+		    <div class="copyright">&copy; Operator 2016</div>
+		</div>
+	</nav>
+
+	<div id="page-content-wrapper">
+		
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			page('/pending', viewEmergencies);
+			page('/in-progress', viewEmergencies);
+			page('/complete', viewEmergencies);
+			page('/archives', viewEmergencies);
+			page('/trash', viewEmergencies);
+			page('/sign-out', signOut);
+			page('*', notFound);
+			page();
+		});
+
+		var globalEmergencies = '';
+		var globalEmergency = '';
+
+		function viewEmergencies(ctx) {
+			switch (ctx.pathname) {
+				case '/pending':
+					globalEmergencies = 1;
+					break;
+				case '/in-progress':
+					globalEmergencies = 2;
+					break;
+				case '/complete':
+					globalEmergencies = 3;
+					break;
+				case '/archives':
+					globalEmergencies = 4;
+					break;
+				case '/trash':
+					globalEmergencies = 5;
+					break;
+				default:
+					console.log('View emergencies: no case matched.');
+			}
+
+			// change title
+			loadEmergenciesAjax();
+		}
+
+		function loadEmergenciesAjax() {
+			$.ajax({
+                type: 'GET',
+                url: '/loadEmergenciesAjax/' + globalEmergencies,
+                dataType: 'json',
+                cache: false
+            }).done(function(json, textStatus, jqXHr) {
+                initDataTable(json);
+            }).fail(function(jqXHr, textStatus, errorThrown) {
+                handleAjaxError(jqXHr, textStatus);
+            }).always(function() {});
+		}
+
+	</script>
+
+</body>
+
+</html>
+
+{{end}}
