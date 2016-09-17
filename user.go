@@ -9,26 +9,10 @@ import (
 
 type User struct {
     UserID        string           `json:"userID"`
-    ResumeInfo    []BasicResume    `json:"resumeInfo"`
-    PortfolioInfo []BasicPortfolio `json:"portfolioInfo"`
     Email         string           `json:"email"`
     Password      string           `json:"password"`
     FirstName     string           `json:"firstName"`
     LastName      string           `json:"lastName"`
-}
-
-type BasicResume struct {
-    ResumeID string `json:"resumeID"`
-    Date     string `json:"date"`
-    Title    string `json:"title"`
-    Preview  Image  `json:"preview"`
-}
-
-type BasicPortfolio struct {
-    PortfolioID string `json:"portfolioID"`
-    Date        string `json:"date"`
-    Title       string `json:"title"`
-    Preview     Image  `json:"preview"`
 }
 
 /*
