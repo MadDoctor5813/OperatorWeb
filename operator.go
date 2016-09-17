@@ -120,9 +120,6 @@ func main() {
 	router.Get("/sign-in", viewLogin)
 	router.Get("/", viewLogin)
 
-	// testInsertEmergency()
-	// testInsertLocation()
-
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":4243", context.ClearHandler(router)); err != nil {
 		log.Println(err)
@@ -424,7 +421,7 @@ func updateLocationJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if returnCode == 0 {
-		if err := json.NewEncoder(w).Encode(location); err != nil {
+		if err := json.NewEncoder(w).Encode(""); err != nil {
 			returnCode = 3
 		}
 	}

@@ -1,12 +1,21 @@
 function initDataModal(json) {
 	var $modal = $('#data-modal');
 
+	console.log('street: ' + json.street);
+	console.log('city: ' + json.city);
+	console.log('province: ' + json.province);
+	console.log('postal code: ' + json.postalCode);
+
 	$modal.find('.category').text(json.category);
 	$modal.find('.date').text(formatDate(json.initTime));
 	$modal.find('.time').text(formatTime(json.initTime));
-	$modal.find('.street').text(json.street);
-	$modal.find('.city').text(json.city + ', ' + json.province);
-	$modal.find('.postal-code').text(json.postalCode);
+
+	$.each(json.locations, function(i, location) {
+		$modal.find('.street').text(location.street);
+		$modal.find('.city').text(location.city + ', ' + location.province);
+		$modal.find('.postal-code').text(location.postalCode);
+	});
+
 	$modal.find('.details').text(json.details);
 	$modal.find('.description').text(json.description);
 	

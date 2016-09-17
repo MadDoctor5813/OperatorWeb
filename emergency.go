@@ -75,39 +75,24 @@ func loadEmergencyDB(emergency *Emergency, Id string) error {
   ========================================
 */
 
-func testInsertEmergency() {
-	// create new MongoDB session
-	collection, session := mongoDBInitialization("emergency")
-	defer session.Close()
-
-	emergency := new(Emergency)
-	emergency.Category = "Cakesplosion"
-	emergency.Details = "I was happy. Then my cake exploded. Now I'm sad."
-	emergency.InitTime = time.Now().Format("20060102150405")
-	emergency.Id = bson.NewObjectId().String()
-	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
-	emergency.Status = 1
-	emergency.Level = 0
-
-	// insert resume
-	err := collection.Insert(emergency)
-	logErrorMessage(err)
-}
-
 func insertEmergencyDB(emergency *Emergency) (string, error) {
 	// create new MongoDB session
 	collection, session := mongoDBInitialization("emergency")
 	defer session.Close()
 
 	emergency.Category = emergency.Category
-	emergency.InitTime = time.Now().Format("20060102150405")
+
+	location, err := time.LoadLocation("EST")
+	logErrorMessage(err)
+	emergency.InitTime = time.Now().In(location).Format("20060102150405")
+
 	emergency.Id = bson.NewObjectId().String()
 	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
 	emergency.Status = 1
 	emergency.Level = 0
 
 	// insert resume
-	err := collection.Insert(emergency)
+	err = collection.Insert(emergency)
 	logErrorMessage(err)
 
 	return emergency.Id, err
@@ -153,36 +138,15 @@ func updateLocationDB(location *Location, emergencyId string) error {
 	defer session.Close()
 
 	selector := bson.M{"id": emergencyId}
+
+	loc, err := time.LoadLocation("EST")
+	logErrorMessage(err)
+	location.Time = time.Now().In(loc).Format("20060102150405")
+
 	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode, "time": location.Time}}
 	update := bson.M{"$addToSet": &change}
 
-	err := collection.Update(selector, update)
-
-	return err
-}
-
-func testInsertLocation() {
-	// create new MongoDB session
-	collection, session := mongoDBInitialization("emergency")
-	defer session.Close()
-
-	emergencyId := "57dd54a08a46bb871d000001"
-
-	location := new(Location)
-	location.Latitude = 43.6489778
-	location.Longitude = -79.3799492
-	location.Street = "44 King St W"
-	location.City = "Toronto"
-	location.Province = "ON"
-	location.PostalCode = "M5H 1H1"
-	location.Time = time.Now().Format("20060102150405")
-
-	selector := bson.M{"id": emergencyId}
-	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode, "time": location.Time}}
-	update := bson.M{"$addToSet": &change}
-
-	// update location
-	err := collection.Update(selector, update)
+	err = collection.Update(selector, update)
 	logErrorMessage(err)
 
 	change = bson.M{"street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode}
@@ -190,6 +154,8 @@ func testInsertLocation() {
 
 	err = collection.Update(selector, update)
 	logErrorMessage(err)
+
+	return err
 }
 
 /*

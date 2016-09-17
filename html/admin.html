@@ -251,23 +251,15 @@
             	var prevData = $table.data('info');
 
             	if ($table.hasClass('initialized')) { // same page
-					if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
-						console.log('same page, new data');
+					if (JSON.stringify(prevData) != JSON.stringify(json.data)) { // new data
 						initDataTable(json);
 						$table.data('info', json.data);
-					}
-					else { // new data
-						console.log('same page, new data');
 					}
 				}
 				else { // new page
 					if (!jQuery.isEmptyObject(json)) { // contains data
-						console.log('new page, contains data');
 						initDataTable(json);
 						$table.data('info', json.data);
-					}
-					else { // no data
-						console.log('new page, no data');
 					}
 
 					$table.addClass('initialized');
@@ -292,22 +284,14 @@
 
             	if ($modal.hasClass('initialized')) { // same modal
             		if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
-            			console.log('same modal, new data');
             			initDataModal(json);
             			$modal.data('info', json);
-            		}
-            		else { // same data
-            			console.log('same modal, same data');
             		}
 			    }
 			    else { // new modal
 			    	if (!jQuery.isEmptyObject(json)) { // contains data
-			    		console.log('new modal, contains data');
 			    		initDataModal(json);
 			    		$modal.data('info', json);
-			    	}
-			    	else { // no data
-			    		console.log('new modal, no data');
 			    	}
 
 			    	$modal.addClass('initialized');

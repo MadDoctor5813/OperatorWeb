@@ -12,9 +12,6 @@ function initDataTable(json) {
 		'stateSave': true,
 
 		'ajax': function(data, callback, settings) {
-            var $table = $('#data-table');
-			var prevData = $('#data-table').data('data');
-
 			clearTable();
 			callback(json);
 		},
