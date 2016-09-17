@@ -109,6 +109,7 @@ func main() {
 	router.Post("/updateEmergencyJSON/:emergencyId/:permission", updateEmergencyJSON)
 	router.Post("/updateLocationJSON/:emergencyId", updateLocationJSON)
 	router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
+	router.Post("/uploadImage/:fileName", uploadImage)
 
 	// view
 	router.Get("/pending", viewAdmin)
@@ -123,7 +124,7 @@ func main() {
 	// testInsertLocation()
 
 	log.Println("Listening...")
-	if err := http.ListenAndServe(":4242", context.ClearHandler(router)); err != nil {
+	if err := http.ListenAndServe(":4243", context.ClearHandler(router)); err != nil {
 		log.Println(err)
 	}
 }
@@ -474,7 +475,8 @@ func deleteEmergencyJSON(w http.ResponseWriter, r *http.Request) {
   ========================================
 */
 
-func uploadImage(r *http.Request, fileName string) {
+func uploadImage(w http.ResponseWriter, r *http.Request) {
+	fileName := vestigo.Param(r, "fileName")
 	filePath := "/img/" + fileName
 
 	err := saveImage(r, filePath) // save image in folder
