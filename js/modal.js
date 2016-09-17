@@ -58,6 +58,7 @@ function clearModal() {
 	$modal.find('.description').text('');
 	
 	// clear image
+	$modal.find('.image img').attr('src', '');
 	
 	$modal.find('.response').text('');
 	$modal.find('.notes').text('');
@@ -79,6 +80,37 @@ function emergencyEventHandler() {
 	$('#data-modal').on('hidden.bs.modal', function() {
 		console.log('modal closed');
 		clearModal();
+	});
+
+	$('#data-modal').on('dblclick', '.text-edit', function() {
+		var $this = $(this);
+		var text = $this.text();
+		var $textareaHTML = $('<textarea class="form-control"></textarea>').val(text);
+		
+		$this.text('').append($textareaHTML);
+		$this.find('textarea').focus();
+	});
+	$('#data-modal').on('click', '.text-edit', function(e) {
+		e.stopPropagation();
+	});
+	$('#data-modal').on('blur', '.text-edit', function() {
+		var $this = $(this);
+		var text = $this.find('textarea').val();
+
+		$this.text(text);
+	});
+
+	$('#data-modal').on('click', 'button.save', function() {
+		var $modal = $('#data-modal');
+
+		var data = {
+			response: $modal.find('.response').text(),
+			notes: $modal.find('.notes').text(),
+			level: parseInt($modal.find('.level input:radio:checked').val()),
+			status: parseInt($modal.find('.status input:radio:checked').val())
+		}
+
+		updateEmergencyAjax(JSON.stringify(data));
 	});
 }
 

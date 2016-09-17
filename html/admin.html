@@ -118,11 +118,11 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-3 control-label">Response</div>
-							<div class="col-sm-9 response"></div>
+							<div class="col-sm-9 response text-edit"></div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-3 control-label">Notes</div>
-							<div class="col-sm-9 notes"></div>
+							<div class="col-sm-9 notes text-edit"></div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-3 control-label">Level</div>
@@ -180,7 +180,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+					<button type="button" class="btn btn-primary save" data-dismiss="modal">Save</button>
 				</div>
 			</div>
 		</div>
@@ -261,6 +261,21 @@
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
             }).always(function() {});
+		}
+
+		function updateEmergencyAjax(dataJSON) {
+			$.ajax({
+	            type: 'POST',
+	            url: '/updateEmergencyJSON/' + globalEmergency + '/admin',
+	            data: dataJSON,
+	            contentType: 'application/json; charset=utf-8',
+	            dataType: 'json',
+	            cache: false
+	        }).done(function(json, textStatus, jqXHr) {
+	        	console.log('done');
+	        }).fail(function(jqXHr, textStatus, errorThrown) {
+	            handleAjaxError(jqXHr, textStatus);
+	        }).always(function() {});
 		}
 
 		function signOut() {

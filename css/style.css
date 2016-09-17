@@ -422,6 +422,9 @@ section {
 .form-group:nth-last-child(1) {
     margin-bottom: 0;
 }
+textarea.form-control {
+    font-size: 18px;
+}
 
 /*
   ========================================
