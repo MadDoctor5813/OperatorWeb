@@ -325,128 +325,113 @@ func loadEmergenciesJSON(w http.ResponseWriter, r *http.Request) {
 func loadEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
-	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		emergency := new(Emergency)
-		id := vestigo.Param(r, "emergencyId")
+	emergency := new(Emergency)
+	id := vestigo.Param(r, "emergencyId")
 
-		if err = loadEmergencyDB(emergency, id); err != nil {
-			returnCode = 1
-		}
+	if err := loadEmergencyDB(emergency, id); err != nil {
+		returnCode = 1
+	}
 
-		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(emergency); err != nil {
-				returnCode = 2
-			}
+	if returnCode == 0 {
+		if err := json.NewEncoder(w).Encode(emergency); err != nil {
+			returnCode = 2
 		}
+	}
 
-		// error handling
-		if returnCode != 0 {
-			handleError(returnCode, errorStatusCode, "Emergency could not be loaded at this time.", w)
-		}
-	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+	// error handling
+	if returnCode != 0 {
+		handleError(returnCode, errorStatusCode, "Emergency could not be loaded at this time.", w)
 	}
 }
 
 func insertEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
+	var err error
 
-	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		emergency := new(Emergency)
+	emergency := new(Emergency)
 
-		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
-			returnCode = 1
+	if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
+		returnCode = 1
+	}
+
+	if returnCode == 0 {
+		if emergency.Id, err = insertEmergencyDB(emergency); err != nil { // Step 1
+			returnCode = 2
 		}
+	}
 
-		if returnCode == 0 {
-			if emergency.Id, err = insertEmergencyDB(emergency); err != nil { // Step 1
-				returnCode = 2
-			}
+	if returnCode == 0 {
+		if err = json.NewEncoder(w).Encode(emergency); err != nil {
+			returnCode = 3
 		}
+	}
 
-		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(emergency); err != nil {
-				returnCode = 3
-			}
-		}
-
-		// error handling
-		if returnCode != 0 {
-			handleError(returnCode, errorStatusCode, "Emergency could not be inserted at this time.", w)
-		}
-	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+	// error handling
+	if returnCode != 0 {
+		handleError(returnCode, errorStatusCode, "Emergency could not be inserted at this time.", w)
 	}
 }
 
 func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
-	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		emergency := new(Emergency)
-		emergency.Id = vestigo.Param(r, "emergencyId")
-		permission := vestigo.Param(r, "permission")
+	emergency := new(Emergency)
+	emergency.Id = vestigo.Param(r, "emergencyId")
+	permission := vestigo.Param(r, "permission")
 
-		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
-			returnCode = 1
-		}
+	if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
+		returnCode = 1
+	}
 
-		if returnCode == 0 {
-			if permission == "user" {
-				if err = updateEmergencyDBUser(emergency); err != nil {
-					returnCode = 2
-				}
-			} else if permission == "admin" {
-				if err = updateEmergencyDBAdmin(emergency); err != nil {
-					returnCode = 2
-				}
+	if returnCode == 0 {
+		if permission == "user" {
+			if err := updateEmergencyDBUser(emergency); err != nil {
+				returnCode = 2
+			}
+		} else if permission == "admin" {
+			if err := updateEmergencyDBAdmin(emergency); err != nil {
+				returnCode = 2
 			}
 		}
+	}
 
-		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(emergency); err != nil {
-				returnCode = 3
-			}
+	if returnCode == 0 {
+		if err := json.NewEncoder(w).Encode(emergency); err != nil {
+			returnCode = 3
 		}
+	}
 
-		// error handling
-		if returnCode != 0 {
-			handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
-		}
-	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+	// error handling
+	if returnCode != 0 {
+		handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
 	}
 }
 
 func updateLocationJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
-	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		location := new(Location)
-		emergencyId := vestigo.Param(r, "emergencyId")
+	location := new(Location)
+	emergencyId := vestigo.Param(r, "emergencyId")
 
-		if json.NewDecoder(r.Body).Decode(location); err != nil {
-			returnCode = 1
-		}
+	if err := json.NewDecoder(r.Body).Decode(location); err != nil {
+		returnCode = 1
+	}
 
-		if returnCode == 0 {
-			if err = updateLocationDB(location, emergencyId); err != nil {
-				returnCode = 2
-			}
+	if returnCode == 0 {
+		if err := updateLocationDB(location, emergencyId); err != nil {
+			returnCode = 2
 		}
+	}
 
-		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(location); err != nil {
-				returnCode = 3
-			}
+	if returnCode == 0 {
+		if err := json.NewEncoder(w).Encode(location); err != nil {
+			returnCode = 3
 		}
+	}
 
-		// error handling
-		if returnCode != 0 {
-			handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
-		}
-	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+	// error handling
+	if returnCode != 0 {
+		handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
 	}
 }
 

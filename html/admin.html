@@ -204,6 +204,8 @@
 
 		var globalEmergencies = '';
 		var globalEmergency = '';
+		var emergenciesTimerID = '';
+		var emergencyTimerID = '';
 
 		function viewEmergencies(ctx) {
 			var title = '';
@@ -257,7 +259,35 @@
                 dataType: 'json',
                 cache: false
             }).done(function(json, textStatus, jqXHr) {
-                initDataModal(json);
+            	var $modal = $('#data-modal');
+            	var prevData = $modal.data('data');
+
+            	if (!$modal.hasClass('initialized')) { // new modal
+            		if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
+            			console.log('new modal, new data');
+            		}
+            		else { // same data
+            			console.log('new modal, same data');
+            		}
+
+            		initDataModal(json);
+					$modal.data('data', json);
+					$modal.addClass('initialized');
+
+				    emergencyTimerID = setInterval(function() { // set up auto-refresh timer
+				    	loadEmergencyAjax();
+				    }, 3000);
+			    }
+			    else { // same modal
+			    	if (!jQuery.isEmptyObject(json)) { // contains data
+			    		console.log('same modal, contains data');
+			    		initDataModal(json);
+			    		$modal.data('data', json);
+			    	}
+			    	else { // no data
+			    		console.log('same modal, no data');
+			    	}
+			    }
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
             }).always(function() {});

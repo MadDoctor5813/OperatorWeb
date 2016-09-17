@@ -69,6 +69,9 @@ function clearModal() {
 	deleteMarkers();
 	flightPath.setMap(null);
 	flightPlanCoordinates = [];
+
+	$modal.removeClass('initialized');
+	clearInterval(emergencyTimerID);
 }
 
 function emergencyEventHandler() {
