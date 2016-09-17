@@ -12,6 +12,7 @@ function initDataTable(json) {
 		'stateSave': true,
 
 		'ajax': function(data, callback, settings) {
+            var $table = $('#data-table');
 			var prevData = $('#data-table').data('data');
 
 			clearTable();
@@ -24,7 +25,7 @@ function initDataTable(json) {
 				else { // new data
 					console.log('same page, new data');
 
-					$('#data-table').data('data', data);
+					$table.data('data', data);
 				}
 			}
 			else { // new page
@@ -36,7 +37,7 @@ function initDataTable(json) {
 				}
 
                 emergenciesEventHandler();
-                $('#data-table').data('data', data);  
+                $table.data('data', data);  
 				$('body').addClass('initialized');              
 			}
 		},
