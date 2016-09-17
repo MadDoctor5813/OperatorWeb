@@ -17,7 +17,7 @@ type Emergency struct {
 	City string `json:"city"`
 	Province string `json:"province"`
 	PostalCode string `json:"postalCode"`
-	Locations Location[] `json:"locations"`
+	Locations []Location `json:"locations"`
 	Notes string `json:"notes"`
 	Response string `json:"response"`
 	Details string `json:"details"`
@@ -68,7 +68,8 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 	newEmergency.Category = emergency.Category
 	newEmergency.Details = emergency.Details
 	newEmergency.InitTime = time.Now().Format("20060102150405")
-	newEmergency.Id = [13:len(bson.NewObjectId().String()) - 2]
+	newEmergency.Id = bson.NewObjectId().String()
+	newEmergency.Id = newEmergency.Id[13:len(newEmergency.Id) - 2]
 	newEmergency.Status = 1
 	newEmergency.Level = 0
 
