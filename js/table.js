@@ -35,8 +35,9 @@ function initDataTable(json) {
 					console.log('new page, yes data');
 				}
 
-				$('body').addClass('initialized');
-				$('#data-table').data('data', data);
+                emergenciesEventHandler();
+                $('#data-table').data('data', data);  
+				$('body').addClass('initialized');              
 			}
 		},
 
@@ -90,7 +91,7 @@ function initDataTable(json) {
 
             api.rows().every(function() {
                 var data = this.data();
-                $(this.node()).attr('id', data.emergencyID);
+                $(this.node()).attr('id', data.id);
             });
         }
 	});
@@ -103,4 +104,11 @@ function clearTable() {
     }
 
     $('#data-table tbody').empty();
+}
+
+function emergenciesEventHandler() {
+    $('#data-table tbody').on('click', 'tr', function() {
+        globalEmergency = $(this).attr('id');
+        loadEmergencyAjax();
+    });
 }

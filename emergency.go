@@ -73,25 +73,43 @@ func loadEmergencyDB(emergency *Emergency, Id string) error {
   ========================================
 */
 
+func testInsertEmergency() {
+	// create new MongoDB session
+	collection, session := mongoDBInitialization("emergency")
+	defer session.Close()
+
+	emergency := new(Emergency)
+	emergency.Category = "Pillow Crack"
+	emergency.Details = "My pillow cracked and Deloitte Digital won't give use a pillow."
+	emergency.InitTime = time.Now().Format("20060102150405")
+	emergency.Id = bson.NewObjectId().String()
+	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
+	emergency.Status = 1
+	emergency.Level = 0
+
+	// insert resume
+	err := collection.Insert(emergency)
+	logErrorMessage(err)
+}
+
 func insertEmergencyDB(emergency *Emergency) (string, error) {
 	// create new MongoDB session
 	collection, session := mongoDBInitialization("emergency")
 	defer session.Close()
 
-	newEmergency := new(Emergency)
-	newEmergency.Category = emergency.Category
-	newEmergency.Details = emergency.Details
-	newEmergency.InitTime = time.Now().Format("20060102150405")
-	newEmergency.Id = bson.NewObjectId().String()
-	newEmergency.Id = newEmergency.Id[13 : len(newEmergency.Id)-2]
-	newEmergency.Status = 1
-	newEmergency.Level = 0
+	emergency.Category = emergency.Category
+	emergency.Details = emergency.Details
+	emergency.InitTime = time.Now().Format("20060102150405")
+	emergency.Id = bson.NewObjectId().String()
+	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
+	emergency.Status = 1
+	emergency.Level = 0
 
 	// insert resume
 	err := collection.Insert(emergency)
 	logErrorMessage(err)
 
-	return newEmergency.Id, err
+	return emergency.Id, err
 }
 
 /*

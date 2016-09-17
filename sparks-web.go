@@ -24,6 +24,13 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+type Emergencies struct {
+	Draw            int         `json:"draw"`
+	RecordsTotal    int         `json:"recordsTotal"`
+	RecordsFiltered int         `json:"recordsFiltered"`
+	Data            []Emergency `json:"data"`
+}
+
 const (
 	errorStatusCode = 398
 	serverName      = "GWS"
@@ -108,6 +115,8 @@ func main() {
 	router.Get("/trash", viewAdmin)
 	router.Get("/sign-in", viewLogin)
 	router.Get("/", viewLogin)
+
+	// testInsertEmergency()
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":4242", context.ClearHandler(router)); err != nil {
@@ -273,9 +282,10 @@ func loadEmergenciesJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
 	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		var emergencies []Emergency
 		var statusInt int
 		var err error
+
+		emergencies := new(Emergencies)
 
 		statusStr := vestigo.Param(r, "status")
 		if statusInt, err = strconv.Atoi(statusStr); err != nil {
@@ -283,13 +293,17 @@ func loadEmergenciesJSON(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if returnCode == 0 {
-			if err = loadEmergenciesDB(&emergencies, statusInt); err != nil {
+			if err = loadEmergenciesDB(&emergencies.Data, statusInt); err != nil {
 				returnCode = 1
 			}
 		}
 
 		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(&emergencies); err != nil {
+			emergencies.Draw = 1
+			emergencies.RecordsTotal = len(emergencies.Data)
+			emergencies.RecordsFiltered = len(emergencies.Data)
+
+			if err = json.NewEncoder(w).Encode(emergencies); err != nil {
 				returnCode = 2
 			}
 		}

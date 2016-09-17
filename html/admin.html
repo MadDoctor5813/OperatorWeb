@@ -245,6 +245,19 @@
             }).always(function() {});
 		}
 
+		function loadEmergencyAjax() {
+			$.ajax({
+                type: 'GET',
+                url: '/loadEmergencyJSON/' + globalEmergency,
+                dataType: 'json',
+                cache: false
+            }).done(function(json, textStatus, jqXHr) {
+                initDataModal(json);
+            }).fail(function(jqXHr, textStatus, errorThrown) {
+                handleAjaxError(jqXHr, textStatus);
+            }).always(function() {});
+		}
+
 		function signOut() {
 			$.ajax({
 	            type: 'GET',
