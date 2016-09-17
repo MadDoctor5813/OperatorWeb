@@ -389,6 +389,15 @@ section {
   ========================================
 */
 
+#data-modal .modal-body {
+    padding-bottom: 0;
+}
+#data-modal .image img {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 10px;
+}
+
 /*
   ========================================
   Map

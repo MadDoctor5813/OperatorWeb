@@ -11,21 +11,26 @@ function initDataModal(json) {
 	$modal.find('.description').text(json.description);
 	
 	// display image
+    $modal.find('.image img').attr('src', '/img/' + json.imageName);
 	
 	$modal.find('.response').text(json.response);
 	$modal.find('.notes').text(json.notes);
 	$modal.find('.level #inlineRadio' + json.level).prop('checked', true);
 	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
 
+	// display map
 	bounds = new google.maps.LatLngBounds();
 
-	// display map
 	$.each(json.locations, function(i, location) {
 		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
+        
         bounds.extend(latLng);
         flightPlanCoordinates.push(latLng);
 
-        addMarker(i, location, latLng);
+        if (i % 5 == 0) {
+        	var index = (i / 5 + 1).toString();
+        	addMarker(index, location, latLng);
+        }
 	});
 
 	flightPath = new google.maps.Polyline({
@@ -56,22 +61,24 @@ function clearModal() {
 	
 	$modal.find('.response').text('');
 	$modal.find('.notes').text('');
-	$modal.find('.level #inlineRadio' + json.level).prop('checked', true); // **** EDIT ****
-	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
+	$modal.find('.level input').prop('checked', false);
+	$modal.find('.status input').prop('checked', false);
 
 	// clear map
+	deleteMarkers();
+	flightPath.setMap(null);
+	flightPlanCoordinates = [];
 }
 
 function emergencyEventHandler() {
 	$('#data-modal').on('shown.bs.modal', function() {
 		console.log('modal open');
-
-		google.maps.event.trigger(map, 'resize');
 		zoomAndCenter();
 	});
 
 	$('#data-modal').on('hidden.bs.modal', function() {
 		console.log('modal closed');
+		clearModal();
 	});
 }
 
@@ -89,22 +96,28 @@ function initMap() {
 	});
 
 	infowindow = new google.maps.InfoWindow();
+
+	map.addListener('click', function() {
+		infowindow.close();
+    });
 }
 
 function zoomAndCenter() {
+	google.maps.event.trigger(map, 'resize');
 	map.setCenter(bounds.getCenter());
 	map.fitBounds(bounds);
+
 	if (map.getZoom() > 16) { // set maximum zoom
 		map.setZoom(16);
 	}
 }
 
 // Adds a marker to the map and push to the array.
-function addMarker(i, location, latLng) {
+function addMarker(index, location, latLng) {
 	var marker = new google.maps.Marker({
 		position: latLng,
 		map: map,
-		label: (i + 1).toString()
+		label: index
 	});
 	markers.push(marker);
 

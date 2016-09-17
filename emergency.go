@@ -80,8 +80,8 @@ func testInsertEmergency() {
 	defer session.Close()
 
 	emergency := new(Emergency)
-	emergency.Category = "Pillow Crack"
-	emergency.Details = "My pillow cracked and Deloitte Digital won't give use a pillow."
+	emergency.Category = "Cakesplosion"
+	emergency.Details = "I was happy. Then my cake exploded. Now I'm sad."
 	emergency.InitTime = time.Now().Format("20060102150405")
 	emergency.Id = bson.NewObjectId().String()
 	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
@@ -152,15 +152,15 @@ func testInsertLocation() {
 	collection, session := mongoDBInitialization("emergency")
 	defer session.Close()
 
-	emergencyId := "57dd50838a46bb867f000001"
+	emergencyId := "57dd54a08a46bb871d000001"
 
 	location := new(Location)
-	location.Latitude = 43.4730115
-	location.Longitude = -80.5403449
-	location.Street = "200 University Ave W"
-	location.City = "Waterloo"
+	location.Latitude = 43.6489778
+	location.Longitude = -79.3799492
+	location.Street = "44 King St W"
+	location.City = "Toronto"
 	location.Province = "ON"
-	location.PostalCode = "N2L 3E9"
+	location.PostalCode = "M5H 1H1"
 	location.Time = time.Now().Format("20060102150405")
 
 	selector := bson.M{"id": emergencyId}
