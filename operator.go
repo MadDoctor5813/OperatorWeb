@@ -361,7 +361,7 @@ func insertEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if returnCode == 0 {
-		if err = json.NewEncoder(w).Encode(emergency); err != nil {
+		if err = json.NewEncoder(w).Encode(emergency.Id); err != nil {
 			returnCode = 3
 		}
 	}

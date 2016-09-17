@@ -17,29 +17,6 @@ function initDataTable(json) {
 
 			clearTable();
 			callback(json);
-
-			if ($('body').hasClass('initialized')) { // same page
-				if (JSON.stringify(prevData) == JSON.stringify(data)) { // same data
-					console.log('same page, same data');
-				}
-				else { // new data
-					console.log('same page, new data');
-
-					$table.data('data', data);
-				}
-			}
-			else { // new page
-				if (jQuery.isEmptyObject(json)) { // no data
-					console.log('new page, no data');
-				}
-				else { // yes data
-					console.log('new page, yes data');
-				}
-
-                emergenciesEventHandler();
-                $table.data('data', data);  
-				$('body').addClass('initialized');              
-			}
 		},
 
 		'columnDefs': [

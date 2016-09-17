@@ -190,6 +190,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
+			emergenciesEventHandler();
 			emergencyEventHandler();
 
 			page('/pending', viewEmergencies);
@@ -246,7 +247,34 @@
                 dataType: 'json',
                 cache: false
             }).done(function(json, textStatus, jqXHr) {
-                initDataTable(json);
+            	var $table = $('#data-table');
+            	var prevData = $table.data('info');
+
+            	if ($table.hasClass('initialized')) { // same page
+					if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
+						console.log('same page, new data');
+						initDataTable(json);
+						$table.data('info', json.data);
+					}
+					else { // new data
+						console.log('same page, new data');
+					}
+				}
+				else { // new page
+					if (!jQuery.isEmptyObject(json)) { // contains data
+						console.log('new page, contains data');
+						initDataTable(json);
+						$table.data('info', json.data);
+					}
+					else { // no data
+						console.log('new page, no data');
+					}
+
+					$table.addClass('initialized');
+			    	emergenciesTimerID = setInterval(function() { // set up auto-refresh timer
+				    	loadEmergenciesAjax();
+				    }, 3000);             
+				}
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
             }).always(function() {});
@@ -260,13 +288,13 @@
                 cache: false
             }).done(function(json, textStatus, jqXHr) {
             	var $modal = $('#data-modal');
-            	var prevData = $modal.data('data');
+            	var prevData = $modal.data('info');
 
             	if ($modal.hasClass('initialized')) { // same modal
             		if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
             			console.log('same modal, new data');
             			initDataModal(json);
-            			$modal.data('data', json);
+            			$modal.data('info', json);
             		}
             		else { // same data
             			console.log('same modal, same data');
@@ -276,7 +304,7 @@
 			    	if (!jQuery.isEmptyObject(json)) { // contains data
 			    		console.log('new modal, contains data');
 			    		initDataModal(json);
-			    		$modal.data('data', json);
+			    		$modal.data('info', json);
 			    	}
 			    	else { // no data
 			    		console.log('new modal, no data');
