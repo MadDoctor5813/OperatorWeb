@@ -83,7 +83,7 @@ func main() {
     router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
     
     // view
-    router.Get("/login", viewLogin)
+    router.Get("/sign-in", viewLogin)
     router.Get("/emergency/:emergencyId", viewEmergency)
     router.Get("/", viewIndex)
 
