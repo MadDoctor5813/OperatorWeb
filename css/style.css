@@ -1,0 +1,420 @@
+/*
+  ========================================
+  Basic
+  ========================================
+*/
+
+html {
+    min-height: 100%;
+}
+body {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+}
+textarea {
+    resize: none;
+}
+
+/*
+  ========================================
+  Typography
+  ========================================
+*/
+
+@font-face {
+    font-style: normal;
+    font-weight: normal;
+}
+body {
+    font-family: "Roboto", Helvetica Neue, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+h1 {
+    text-align: center;
+}
+p {
+    margin: 0;
+    margin-bottom: 18px;
+}
+
+/*
+  ========================================
+  Container
+  ========================================
+*/
+
+.container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0 auto;
+}
+section .container {
+    padding: 50px;
+}
+
+@media (max-width: 767px) {
+    section .container {
+        padding: 50px 0;
+    }
+}
+@media (min-width: 992px) {
+    #page-content-wrapper #main-container {
+        margin-left: 250px;
+    }
+}
+
+/*
+  ========================================
+  Links
+  ========================================
+*/
+
+a,
+a:active,
+a:focus,
+a:hover,
+a:visited {
+    outline: none;
+    text-decoration: none;
+}
+a:hover {
+    cursor: pointer;
+}
+
+.links .facebook .fa-circle {
+    color: rgb(73, 92, 165);
+}
+.links .twitter .fa-circle {
+    color: rgb(65, 170, 241);
+}
+.links .linkedin .fa-circle {
+    color: rgb(0, 119, 181);
+}
+
+/*
+  ========================================
+  Lists
+  ========================================
+*/
+
+ul {
+    padding-left: 25px;
+    margin: 0;
+    list-style: disc;
+}
+ul ul {
+    padding-left: 25px;
+    list-style: circle;
+}
+ul.default {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/*
+  ========================================
+  Buttons
+  ========================================
+*/
+
+button.default {
+    border: none;
+    outline: none;
+}
+button.default:focus { 
+    outline: none;
+}
+a[type="button"] {
+    cursor: pointer;
+}
+
+/*
+button.close {
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    position: absolute;
+    z-index: 10;
+}
+*/
+
+/*
+  ========================================
+  Navigation Top
+  ========================================
+*/
+
+.navbar-top {
+    height: 50px;
+    border: none;
+    margin: 0;
+    z-index: 10;
+    background-color: rgba(248, 248, 248, .8); /* **** OPACITY DOESN'T WORK IN DASHBOARD **** */
+}
+.navbar-top li {
+    position: absolute;
+    height: 50px;
+    font-size: 26px;
+    padding: 7px;
+}
+.navbar-top a {
+    color: #335ace;
+}
+.navbar-top a:hover {
+    color: #2d50b7;
+}
+    .navbar-top li.first {
+        width: 40px;
+        left: 10px;
+        z-index: 11; /* **** TEMPORARY HACK **** */
+    }
+    .navbar-top li.second {
+        left: 50px;
+        right: 50px;
+        overflow: hidden;
+    }
+    .navbar-top li.third {
+        width: 40px;
+        right: 10px;
+    }
+@media (min-width: 992px) {
+    #navbar-top-layer-2 {
+        margin-left: 250px;
+    }
+    .navbar-top li.first {
+        left: 50px;
+    }
+    .navbar-top li.second {
+        left: 90px;
+        right: 90px;
+    }
+    .navbar-top li.third {
+        right: 50px;
+    }
+}
+
+/*
+  ========================================
+  Navigation Side
+  ========================================
+*/
+
+#sidebar-wrapper {
+    position: absolute;
+    box-shadow: 1px 0 15px rgba(0, 0, 0, .3);
+    height: 100%;
+    width: 250px;
+    border: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -ms-overflow-style: none;
+    background-color: #fff;
+    z-index: 9;
+}
+#sidebar-wrapper .sidebar-header {
+    display: block;
+    height: 100px;
+    width: 250px;
+    background-image: url("/css/nav-header.png");
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+            background-size: cover;
+    background-position: center;
+}
+#sidebar-wrapper .sidebar-header i {
+    display: none;
+}
+#sidebar-wrapper .sidebar-nav .pending i {
+    color: #F24333;
+}
+#sidebar-wrapper .sidebar-nav .in-progress i {
+    color: #FBFE4F;
+}
+#sidebar-wrapper .sidebar-nav .complete i {
+    color: #4ACE83;
+}
+#sidebar-wrapper .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+#sidebar-wrapper .sidebar-footer .logo {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+#sidebar-wrapper .sidebar-footer .copyright {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+#sidebar-wrapper .sidebar-footer .copyright a {
+    color: #7999ff;
+}
+
+@media (max-width: 991px) {
+    #sidebar-wrapper {
+        position: fixed;
+        box-shadow: 0 0 25px rgba(0, 0, 0, .35);
+        height: 100%;
+        width: 250px;
+        z-index: 101;
+        left: -250px; 
+        opacity: 0.3;
+        -webkit-transform: translateX(0);
+                transform: translateX(0);
+        -webkit-transition: transform 300ms ease-out, opacity 300ms ease-out;
+                transition: transform 300ms ease-out, opacity 300ms ease-out;
+    }
+    #sidebar-wrapper.toggled {
+        opacity: 1;
+        -webkit-transform: translateX(250px);
+                transform: translateX(250px);
+    }
+    #sidebar-wrapper.toggled + #page-content-wrapper {
+        overflow: hidden !important;
+    }
+    #sidebar-wrapper .sidebar-header i {
+        display: inline-block;
+        position: relative;
+        margin: 25px;
+        font-size: 50px;
+        color: #fff;
+        cursor: pointer;
+    }
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .1);
+        z-index: 100;
+    }
+}
+
+.sidebar-nav a {
+    color: #555;
+}
+.sidebar-nav a:hover, 
+.sidebar-nav a:focus {
+    color: #000;
+}
+.sidebar-nav > li > a {
+    padding: 10px 25px 10px 45px;
+    border-left: 5px solid transparent;
+}
+.sidebar-nav > li > a:hover {
+    background-color: rgba(33, 33, 33, .1);
+    border-left: 5px solid #3F51B5;
+}
+.sidebar-nav > li > a > i {
+    position: absolute;
+    left: 15px;
+    top: 1px;
+    width: 25px;
+    text-align: center;
+    padding: 12px 0;
+}
+
+.sidebar-nav li.active > a {
+    color: #000;
+}
+.sidebar-nav > li.active > a, 
+.sidebar-nav > li.open > a {
+    border-left: 5px solid #3F51B5;
+}
+.sidebar-nav li > a > .arrow:before {
+    float: right;
+    margin-top: 0;
+    margin-right: 20px;
+    display: inline;
+    font-size: 16px;
+    font-family: FontAwesome;
+    height: auto;
+    content: "\f107";
+    font-weight: normal;
+    text-shadow: none;
+}
+.sidebar-nav li.open > a > .arrow:before {
+    content: "\f106";
+}
+.sidebar-nav li > a > .arrow {
+    float: right;
+    position: absolute;
+    right: 0;
+}
+
+/*
+  ========================================
+  12. Sections
+  ========================================
+*/
+
+section {
+    /* min-height: 100vh; */
+    height: 100vh;
+    overflow-y: scroll;
+    width: 100%;
+    background-color: rgb(234, 234, 234);
+    color: #333;
+}
+    section h1 {
+        font-size: 40px;
+        margin-bottom: 20px;
+    }
+
+@media (max-width: 991px) {
+    #main-container section {
+        margin-top: 50px;
+        padding-bottom: 50px;
+    }
+}
+
+/*
+  ========================================
+  14. Forms
+  ========================================
+*/
+
+.form-horizontal .control-label {
+    font-weight: 400;
+}
+.form-group:nth-last-child(1) {
+    margin-bottom: 0;
+}
+
+/*
+  ========================================
+  15. Alerts
+  ========================================
+*/
+
+.alert {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    margin: 0;
+    z-index: 100;
+}
+
+/*
+  ========================================
+  16. Sign In
+  ========================================
+*/
+
+#sign-in .container {
+    width: 50%;
+}
+@media (max-width: 991px) {
+    #sign-in .container {
+        width: 100%;
+    }
+}
