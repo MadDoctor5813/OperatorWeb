@@ -19,10 +19,6 @@ body {
   ========================================
 */
 
-@font-face {
-    font-style: normal;
-    font-weight: normal;
-}
 body {
     font-family: "Roboto", Helvetica Neue, Arial, sans-serif;
     font-size: 18px;
@@ -377,6 +373,9 @@ section {
 #data-table:hover {
     cursor: pointer;
 }
+#data-table th {
+    font-weight: 400;
+}
 #data-table th,
 #data-table td,
 #data-table th:active,
@@ -395,6 +394,11 @@ section {
   Map
   ========================================
 */
+
+#map {
+    width: 100%;
+    height: 500px;
+}
 
 /*
   ========================================

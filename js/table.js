@@ -109,11 +109,44 @@ function initDataTable(json) {
 	});
 }
 
-function clearTable() {    
-    if ($('body').data('autosave-timer')) {
-        clearInterval($('body').data('autosave-timer'));
-        $('body').removeData('autosave-timer');
+function clearTable() {
+    var link = '';
+
+    switch (globalEmergencies) {
+        case 1:
+            link = '/pending';
+            break;
+        case 2:
+            link = '/in-progress';
+            break;
+        case 3:
+            link = '/complete';
+            break;
+        case 4:
+            link = '/archives';
+            break;
+        case 5:
+            link = '/trash';
+            break;
     }
+    
+    // synchronize side menu with url
+    $('#sidebar-wrapper ul').css('display', '');
+    $('#sidebar-wrapper li.active').removeClass('active').removeClass('open');
+    $('#sidebar-wrapper li:has(a[href="' + link + '"])').addClass('active').addClass('open');
+
+    // close side menu
+    $('[data-uw-action="sidebar-open"]').removeClass('toggled');
+    $('#sidebar-wrapper').removeClass('toggled');
+    
+    var selection = document.querySelector('#dynamic-sidebar-style');
+    if (selection) {
+        selection.textContent = '';
+    }
+    
+    $('.alert').hide(); // remove alerts
+    $('#page-content-wrapper').removeClass('toggled');
+    $('#sidebar-backdrop').remove();
 
     $('#data-table tbody').empty();
 }
