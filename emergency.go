@@ -107,7 +107,7 @@ func updateEmergencyDB(emergency *Emergency) error {
 
 func deleteEmergencyDB(id string) error {
     // create new MongoDB session
-    collection, session := mongoDBInitialization("resume")
+    collection, session := mongoDBInitialization("emergency")
     defer session.Close()
     
     // find document and delete resume
