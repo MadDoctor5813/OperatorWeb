@@ -12,7 +12,6 @@ import (
     "github.com/gorilla/context"
     "github.com/gorilla/sessions"
     "github.com/husobee/vestigo"
-    "gopkg.in/mgo.v2/bson"
 )
 
 type Page struct {
