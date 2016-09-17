@@ -68,12 +68,13 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 	newEmergency.Category = emergency.Category
 	newEmergency.Details = emergency.Details
 	newEmergency.InitTime = time.Now().Format("20060102150405")
+	newEmergency.Id = [13:len(bson.NewObjectId().String()) - 2]
 
     // insert resume
     err := collection.Insert(emergency)
     logErrorMessage(err)
     
-    return emergency.Id, err
+    return newEmergency.Id, err
 }
 
 /*
