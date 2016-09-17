@@ -117,6 +117,7 @@ func main() {
 	router.Get("/", viewLogin)
 
 	// testInsertEmergency()
+	// testInsertLocation()
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":4242", context.ClearHandler(router)); err != nil {

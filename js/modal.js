@@ -17,7 +17,25 @@ function initDataModal(json) {
 	$modal.find('.level #inlineRadio' + json.level).prop('checked', true);
 	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
 
+	bounds = new google.maps.LatLngBounds();
+
 	// display map
+	$.each(json.locations, function(i, location) {
+		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
+        bounds.extend(latLng);
+        flightPlanCoordinates.push(latLng);
+
+        addMarker(i, location, latLng);
+	});
+
+	flightPath = new google.maps.Polyline({
+		path: flightPlanCoordinates,
+		geodesic: true,
+		strokeColor: '#FF0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 2
+    });
+    flightPath.setMap(map);
 
 	$modal.modal('show');
 }
@@ -47,10 +65,9 @@ function clearModal() {
 function emergencyEventHandler() {
 	$('#data-modal').on('shown.bs.modal', function() {
 		console.log('modal open');
-		
-	    var currentCenter = map.getCenter();  // get current center before resizing
+
 		google.maps.event.trigger(map, 'resize');
-		map.setCenter(currentCenter); // re-set previous center
+		zoomAndCenter();
 	});
 
 	$('#data-modal').on('hidden.bs.modal', function() {
@@ -70,4 +87,61 @@ function initMap() {
 		center: {lat: 43.471867, lng: -80.5415358},
 		zoom: 16
 	});
+
+	infowindow = new google.maps.InfoWindow();
+}
+
+function zoomAndCenter() {
+	map.setCenter(bounds.getCenter());
+	map.fitBounds(bounds);
+	if (map.getZoom() > 16) { // set maximum zoom
+		map.setZoom(16);
+	}
+}
+
+// Adds a marker to the map and push to the array.
+function addMarker(i, location, latLng) {
+	var marker = new google.maps.Marker({
+		position: latLng,
+		map: map,
+		label: (i + 1).toString()
+	});
+	markers.push(marker);
+
+	var infowindowHTML = '\
+		<div id="infowindow">\
+			<div class="time">' + formatTime(location.time) + '</div>\
+			<div class="street">' + location.street + '</div>\
+			<div class="city province">' + location.city + ', ' + location.province + '</div>\
+			<div class="postal-code">' + location.postalCode + '</div>\
+		</div>';
+
+	google.maps.event.addListener(marker, 'click', function() {
+        infowindow.close();
+        infowindow.setContent(infowindowHTML);
+        infowindow.open(map, marker);
+    });
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(map);
+	}
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+	setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+	setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+	clearMarkers();
+	markers = [];
 }

@@ -84,7 +84,7 @@ function handleAjaxError(jqXHr, textStatus) {
                     else {
                         message = '403 Forbidden';
                     }
-                    window.location.pathname = '/login';
+                    window.location.pathname = '/sign-in';
                     
                     break;
                 case 404: // not found

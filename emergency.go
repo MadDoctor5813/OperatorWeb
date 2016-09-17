@@ -31,6 +31,7 @@ type Location struct {
 	City       string  `json:"city"`
 	Province   string  `json:"province"`
 	PostalCode string  `json:"postalCode"`
+	Time       string  `json:"time"`
 }
 
 /*
@@ -138,12 +139,43 @@ func updateLocationDB(location *Location, emergencyId string) error {
 	defer session.Close()
 
 	selector := bson.M{"id": emergencyId}
-	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode}}
+	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode, "time": location.Time}}
 	update := bson.M{"$addToSet": &change}
 
 	err := collection.Update(selector, update)
 
 	return err
+}
+
+func testInsertLocation() {
+	// create new MongoDB session
+	collection, session := mongoDBInitialization("emergency")
+	defer session.Close()
+
+	emergencyId := "57dd50838a46bb867f000001"
+
+	location := new(Location)
+	location.Latitude = 43.4730115
+	location.Longitude = -80.5403449
+	location.Street = "200 University Ave W"
+	location.City = "Waterloo"
+	location.Province = "ON"
+	location.PostalCode = "N2L 3E9"
+	location.Time = time.Now().Format("20060102150405")
+
+	selector := bson.M{"id": emergencyId}
+	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode, "time": location.Time}}
+	update := bson.M{"$addToSet": &change}
+
+	// update location
+	err := collection.Update(selector, update)
+	logErrorMessage(err)
+
+	change = bson.M{"street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode}
+	update = bson.M{"$set": &change}
+
+	err = collection.Update(selector, update)
+	logErrorMessage(err)
 }
 
 /*
