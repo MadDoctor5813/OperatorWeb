@@ -101,12 +101,13 @@ func main() {
 	router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
 
 	// view
-	router.Get("/sign-in", viewLogin)
 	router.Get("/pending", viewAdmin)
 	router.Get("/in-progress", viewAdmin)
 	router.Get("/complete", viewAdmin)
 	router.Get("/archives", viewAdmin)
 	router.Get("/trash", viewAdmin)
+
+	router.Get("/sign-in", viewLogin)
 	router.Get("/", viewLogin)
 
 	log.Println("Listening...")
@@ -143,7 +144,7 @@ func viewAdmin(w http.ResponseWriter, r *http.Request) {
 
 	// error handling
 	if returnCode != 0 {
-		handleError(returnCode, errorStatusCode, "Index page could not be loaded at this time.", w)
+		handleError(returnCode, errorStatusCode, "Admin page could not be loaded at this time.", w)
 	}
 }
 

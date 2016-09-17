@@ -1,3 +1,7 @@
+function notFound() {
+    $('body').text('Not found!');
+}
+
 function eventHandler() {
     $('body').on('click', '[data-uw-action]', function(e) {
         e.preventDefault();
