@@ -262,31 +262,30 @@
             	var $modal = $('#data-modal');
             	var prevData = $modal.data('data');
 
-            	if (!$modal.hasClass('initialized')) { // new modal
+            	if ($modal.hasClass('initialized')) { // same modal
             		if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
-            			console.log('new modal, new data');
+            			console.log('same modal, new data');
+            			initDataModal(json);
+            			$modal.data('data', json);
             		}
             		else { // same data
-            			console.log('new modal, same data');
+            			console.log('same modal, same data');
             		}
-
-            		initDataModal(json);
-					$modal.data('data', json);
-					$modal.addClass('initialized');
-
-				    emergencyTimerID = setInterval(function() { // set up auto-refresh timer
-				    	loadEmergencyAjax();
-				    }, 3000);
 			    }
-			    else { // same modal
+			    else { // new modal
 			    	if (!jQuery.isEmptyObject(json)) { // contains data
-			    		console.log('same modal, contains data');
+			    		console.log('new modal, contains data');
 			    		initDataModal(json);
 			    		$modal.data('data', json);
 			    	}
 			    	else { // no data
-			    		console.log('same modal, no data');
+			    		console.log('new modal, no data');
 			    	}
+
+			    	$modal.addClass('initialized');
+			    	emergencyTimerID = setInterval(function() { // set up auto-refresh timer
+				    	loadEmergencyAjax();
+				    }, 3000);
 			    }
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
