@@ -3,7 +3,7 @@ function initDataTable(json) {
 		'dataSrc': '',
 		'destroy': true,
 		'info': false,
-		'order': [[5, 'asc']],
+		'order': [[5, 'asc'], [6, 'asc']],
 		'ordering': true,
 		'paging': false,
 		'processing': false,
@@ -75,12 +75,24 @@ function initDataTable(json) {
             {
                 'data': 'initTime',
                 'targets': 5,
+                'title': 'Date',
+                'orderable': true,
+                'render': function(data, type, full, meta) {
+                    return formatDate(data);
+                }
+            },
+            {
+                'data': 'initTime',
+                'targets': 6,
                 'title': 'Time',
-                'orderable': true
+                'orderable': true,
+                'render': function(data, type, full, meta) {
+                    return formatTime(data);
+                }
             },
             {
                 'data': 'level',
-                'targets': 6,
+                'targets': 7,
                 'title': 'Level',
                 'orderable': true
             }

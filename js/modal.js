@@ -1,11 +1,11 @@
 function initDataModal(json) {
 	var $modal = $('#data-modal');
 
-	$modal.find('.date').text(formatDate(json.date));
+	$modal.find('.date').text(formatDate(json.initTime));
 	$modal.find('.time').text(formatTime(json.initTime));
 	$modal.find('.street').text(json.street);
 	$modal.find('.city').text(json.city + ', ' + json.province);
-	$modal.find('.postal-code').text(json.postal-code);
+	$modal.find('.postal-code').text(json.postalCode);
 	$modal.find('.details').text(json.details);
 	$modal.find('.description').text(json.description);
 	
@@ -17,6 +17,9 @@ function initDataModal(json) {
 	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
 
 	// display map
+
+	console.log('show');
+	$modal.modal('show');
 }
 
 function clearModal() {    

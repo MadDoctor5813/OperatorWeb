@@ -133,3 +133,72 @@ function displayAlertMessage(message) {
     
     $('body').append(alertMessageHTML);
 }
+
+function formatDate(date) {
+    var year = date.substr(0, 4);
+    var month = date.substr(4, 2);
+    var day = date.substr(6, 2);
+
+    switch (month) {
+        case '01':
+            month = 'January';
+            break;
+        case '02':
+            month = 'February';
+            break;
+        case '03':
+            month = 'March';
+            break;
+        case '04':
+            month = 'April';
+            break;
+        case '05':
+            month = 'May';
+            break;
+        case '06':
+            month = 'June';
+            break;
+        case '07':
+            month = 'July';
+            break;
+        case '08':
+            month = 'August';
+            break;
+        case '09':
+            month = 'September';
+            break;
+        case '10':
+            month = 'October';
+            break;
+        case '11':
+            month = 'November';
+            break;
+        case '12':
+            month = 'December';
+            break;
+        default:
+            console.log('Format date case not matched.');
+    }
+
+    return month + " " + day + ", " + year;
+}
+
+function formatTime(time) {
+    var hour = time.substr(8, 2);
+    var minute = time.substr(10, 2);
+    var second = time.substr(12, 2);
+    var am = 'AM';
+
+    if (hour < 10) {
+        hour = hour.substr(1, 1);
+    }
+    else if (hour == 12) {
+        am = 'PM';
+    }
+    else if (hour > 12) {
+        hour = hour - 12;
+        am = 'PM';
+    }
+
+    return hour + ':' + minute + ':' + second + ' ' + am;
+}
