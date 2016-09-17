@@ -400,7 +400,7 @@ func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
     
     if uID, err := readSession("userID", w, r); err == nil && uID != nil {
         emergency := new(Emergency)
-		emergency.Id = vestigo.Param(rm "emergencyId")
+		emergency.Id = vestigo.Param(r, "emergencyId")
 		json.NewDecoder(r.Body).Decode(emergency)
 
 		if err = updateEmergencyDB(emergency); err != nil {
