@@ -12,9 +12,6 @@ body {
     min-height: 100%;
     overflow: hidden;
 }
-textarea {
-    resize: none;
-}
 
 /*
   ========================================
@@ -86,16 +83,6 @@ a:hover {
     cursor: pointer;
 }
 
-.links .facebook .fa-circle {
-    color: rgb(73, 92, 165);
-}
-.links .twitter .fa-circle {
-    color: rgb(65, 170, 241);
-}
-.links .linkedin .fa-circle {
-    color: rgb(0, 119, 181);
-}
-
 /*
   ========================================
   Lists
@@ -134,15 +121,14 @@ a[type="button"] {
     cursor: pointer;
 }
 
-/*
 button.close {
-    width: 30px;
-    height: 30px;
-    font-size: 30px;
+    width: 40px;
+    height: 40px;
     position: absolute;
+    right: 15px;
+    font-size: 40px;
     z-index: 10;
 }
-*/
 
 /*
   ========================================
@@ -391,6 +377,12 @@ section {
 #data-table:hover {
     cursor: pointer;
 }
+#data-table th,
+#data-table td,
+#data-table th:active,
+#data-table td:active {
+    outline: none;
+}
 
 /*
   ========================================
@@ -411,6 +403,7 @@ section {
 */
 
 .form-horizontal .control-label {
+    padding-top: 0;
     font-weight: 400;
 }
 .form-group:nth-last-child(1) {

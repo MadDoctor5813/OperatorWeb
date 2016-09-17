@@ -1,6 +1,7 @@
 function initDataModal(json) {
 	var $modal = $('#data-modal');
 
+	$modal.find('.category').text(json.category);
 	$modal.find('.date').text(formatDate(json.initTime));
 	$modal.find('.time').text(formatTime(json.initTime));
 	$modal.find('.street').text(json.street);
@@ -30,6 +31,7 @@ function clearModal() {
 
     var $modal = $('#data-modal');
 
+    $modal.find('.category').text('');
     $modal.find('.date').text('');
 	$modal.find('.time').text('');
 	$modal.find('.street').text('');
