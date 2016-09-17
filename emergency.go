@@ -8,20 +8,21 @@ import (
 )
 
 type Emergency struct {
-	Id         string     `json:"id"`
-	Status     int        `json:"status"`
-	Category   string     `json:"category"`
-	Level      int        `json:"level"`
-	InitTime   string     `json:"initTime"`
-	Street     string     `json:"street"`
-	City       string     `json:"city"`
-	Province   string     `json:"province"`
-	PostalCode string     `json:"postalCode"`
-	Locations  []Location `json:"locations"`
-	Notes      string     `json:"notes"`
-	Response   string     `json:"response"`
-	Details    string     `json:"details"`
-	ImageName  string     `json:"imageName"`
+	Id          string     `json:"id"`
+	Status      int        `json:"status"`
+	Category    string     `json:"category"`
+	Level       int        `json:"level"`
+	InitTime    string     `json:"initTime"`
+	Street      string     `json:"street"`
+	City        string     `json:"city"`
+	Province    string     `json:"province"`
+	PostalCode  string     `json:"postalCode"`
+	Locations   []Location `json:"locations"`
+	Notes       string     `json:"notes"`
+	Response    string     `json:"response"`
+	Details     string     `json:"details"`
+	Description string     `json:"description"`
+	ImageName   string     `json:"imageName"`
 }
 
 type Location struct {
@@ -99,7 +100,6 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 	defer session.Close()
 
 	emergency.Category = emergency.Category
-	emergency.Details = emergency.Details
 	emergency.InitTime = time.Now().Format("20060102150405")
 	emergency.Id = bson.NewObjectId().String()
 	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
@@ -119,7 +119,21 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
   ========================================
 */
 
-func updateEmergencyDB(emergency *Emergency) error {
+func updateEmergencyDBUser(emergency *Emergency) error {
+	// create new MongoDB session
+	collection, session := mongoDBInitialization("emergency")
+	defer session.Close()
+
+	selector := bson.M{"id": emergency.Id}
+	change := bson.M{"details": emergency.Details, "description": emergency.Description, "imagename": emergency.ImageName}
+	update := bson.M{"$set": &change}
+
+	err := collection.Update(selector, update)
+
+	return err
+}
+
+func updateEmergencyDBAdmin(emergency *Emergency) error {
 	// create new MongoDB session
 	collection, session := mongoDBInitialization("emergency")
 	defer session.Close()

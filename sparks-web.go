@@ -3,8 +3,11 @@ package main
 import (
 	"encoding/json"
 	"html/template"
+	"image"
+	"image/jpeg"
 	"log"
 	"net/http"
+	"os"
 	"path"
 	"strconv"
 	"strings"
@@ -103,7 +106,7 @@ func main() {
 	router.Get("/loadEmergenciesJSON/:status", loadEmergenciesJSON)
 	router.Get("/loadEmergencyJSON/:emergencyId", loadEmergencyJSON)
 	router.Post("/insertEmergencyJSON", insertEmergencyJSON)
-	router.Post("/updateEmergencyJSON/:emergencyId", updateEmergencyJSON)
+	router.Post("/updateEmergencyJSON/:emergencyId/:permission", updateEmergencyJSON)
 	router.Post("/updateLocationJSON/:emergencyId", updateLocationJSON)
 	router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
 
@@ -117,7 +120,7 @@ func main() {
 	router.Get("/", viewLogin)
 
 	// testInsertEmergency()
-	testInsertLocation()
+	// testInsertLocation()
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":4242", context.ClearHandler(router)); err != nil {
@@ -381,14 +384,21 @@ func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
 		emergency := new(Emergency)
 		emergency.Id = vestigo.Param(r, "emergencyId")
+		permission := vestigo.Param(r, "permission")
 
 		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
 			returnCode = 1
 		}
 
 		if returnCode == 0 {
-			if err = updateEmergencyDB(emergency); err != nil {
-				returnCode = 2
+			if permission == "user" {
+				if err = updateEmergencyDBUser(emergency); err != nil {
+					returnCode = 2
+				}
+			} else if permission == "admin" {
+				if err = updateEmergencyDBAdmin(emergency); err != nil {
+					returnCode = 2
+				}
 			}
 		}
 
@@ -456,6 +466,39 @@ func deleteEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	} else {
 		handleError(3, 403, "Session expired. Please sign in again.", w)
 	}
+}
+
+/*
+  ========================================
+  Image
+  ========================================
+*/
+
+func uploadImage(r *http.Request, fileName string) {
+	filePath := "/img/" + fileName
+
+	err := saveImage(r, filePath) // save image in folder
+	logErrorMessage(err)
+}
+
+func saveImage(r *http.Request, filePath string) error {
+	var err error
+
+	file, _, err := r.FormFile("uploadFile")
+	logErrorMessage(err)
+	defer file.Close()
+
+	originalImage, _, err := image.Decode(file) // decode file
+	logErrorMessage(err)
+
+	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666) // open file
+	logErrorMessage(err)
+	defer f.Close()
+
+	err = jpeg.Encode(f, originalImage, &jpeg.Options{100}) // encode image
+	logErrorMessage(err)
+
+	return err
 }
 
 /*
