@@ -8,7 +8,19 @@
 
 <body>
 
-
+	<nav class="navbar navbar-default navbar-top navbar-fixed-top">
+        <ul class="list-inline text-center">
+            <li class="toggle-menu first" data-uw-action="sidebar-open" data-uw-target="sidebar-wrapper">
+                <a><i class="fa fa-bars"></i></a>
+            </li>
+            <li class="logo second">
+                <a>Operator</a>
+            </li>
+            <li class="third">
+                <a><i class="fa fa-ellipsis-v"></i></a>
+            </li>
+        </ul>
+    </nav>
 
 	<nav id="sidebar-wrapper" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="sidebar-header">
@@ -166,7 +178,6 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
 				</div>
 			</div>
 		</div>
@@ -224,7 +235,7 @@
 		function loadEmergenciesAjax() {
 			$.ajax({
                 type: 'GET',
-                url: '/loadEmergenciesAjax/' + globalEmergencies,
+                url: '/loadEmergenciesJSON/' + globalEmergencies,
                 dataType: 'json',
                 cache: false
             }).done(function(json, textStatus, jqXHr) {
@@ -232,6 +243,19 @@
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
             }).always(function() {});
+		}
+
+		function signOut() {
+			$.ajax({
+	            type: 'GET',
+	            url: '/logoutJSON',
+	            dataType: 'json',
+	            cache: false
+	        }).done(function(json, textStatus, jqXHr) {
+	            window.location.pathname = '/sign-in';
+	        }).fail(function(jqXHr, textStatus, errorThrown) {
+	            handleAjaxError(jqXHr, textStatus);
+	        }).always(function() {});
 		}
 
 	</script>

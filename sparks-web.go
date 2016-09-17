@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -87,17 +88,16 @@ func main() {
 		fileServerIMG.ServeHTTP(w, r)
 	})
 
-	// resume
-	router.Get("/viewEmergencyJSON/:emergencyId", viewEmergencyJSON)
-
 	// login & logout
 	router.Post("/checkLoginInfoJSON", checkLoginInfoJSON)
 	router.Get("/logoutJSON", logoutJSON)
 
-	// resume
+	// emergency
+	router.Get("/loadEmergenciesJSON/:status", loadEmergenciesJSON)
 	router.Get("/loadEmergencyJSON/:emergencyId", loadEmergencyJSON)
-	router.Post("/insertEmergencyJSON/:emergencyId", insertEmergencyJSON)
+	router.Post("/insertEmergencyJSON", insertEmergencyJSON)
 	router.Post("/updateEmergencyJSON/:emergencyId", updateEmergencyJSON)
+	router.Post("/updateLocationJSON/:emergencyId", updateLocationJSON)
 	router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
 
 	// view
@@ -106,7 +106,6 @@ func main() {
 	router.Get("/complete", viewAdmin)
 	router.Get("/archives", viewAdmin)
 	router.Get("/trash", viewAdmin)
-
 	router.Get("/sign-in", viewLogin)
 	router.Get("/", viewLogin)
 
@@ -171,34 +170,6 @@ func viewLogin(w http.ResponseWriter, r *http.Request) {
 	// error handling
 	if returnCode != 0 {
 		handleError(returnCode, errorStatusCode, "Login page could not be loaded at this time.", w)
-	}
-}
-
-/*
-  ========================================
-  Resume
-  ========================================
-*/
-
-func viewEmergencyJSON(w http.ResponseWriter, r *http.Request) {
-	returnCode := 0
-
-	emergency := new(Emergency)
-	id := vestigo.Param(r, "emergencyId")
-
-	if err := loadEmergencyDB(emergency, id); err != nil {
-		returnCode = 1
-	}
-
-	if returnCode == 0 {
-		if err := json.NewEncoder(w).Encode(emergency); err != nil {
-			returnCode = 2
-		}
-	}
-
-	// error handling
-	if returnCode != 0 {
-		handleError(returnCode, errorStatusCode, "Emergency could not be loaded at this time.", w)
 	}
 }
 
@@ -294,9 +265,43 @@ func deleteSession(w http.ResponseWriter, r *http.Request) error {
 
 /*
   ========================================
-  Resume
+  Emergency
   ========================================
 */
+
+func loadEmergenciesJSON(w http.ResponseWriter, r *http.Request) {
+	returnCode := 0
+
+	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
+		var emergencies []Emergency
+		var statusInt int
+		var err error
+
+		statusStr := vestigo.Param(r, "status")
+		if statusInt, err = strconv.Atoi(statusStr); err != nil {
+			returnCode = 1
+		}
+
+		if returnCode == 0 {
+			if err = loadEmergenciesDB(&emergencies, statusInt); err != nil {
+				returnCode = 1
+			}
+		}
+
+		if returnCode == 0 {
+			if err = json.NewEncoder(w).Encode(&emergencies); err != nil {
+				returnCode = 2
+			}
+		}
+
+		// error handling
+		if returnCode != 0 {
+			handleError(returnCode, errorStatusCode, "Emergencies could not be loaded at this time.", w)
+		}
+	} else {
+		handleError(3, 403, "Session expired. Please sign in again.", w)
+	}
+}
 
 func loadEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
@@ -329,17 +334,20 @@ func insertEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 
 	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
 		emergency := new(Emergency)
-		json.NewDecoder(r.Body).Decode(emergency)
+
+		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
+			returnCode = 1
+		}
 
 		if returnCode == 0 {
 			if emergency.Id, err = insertEmergencyDB(emergency); err != nil { // Step 1
-				returnCode = 1
+				returnCode = 2
 			}
 		}
 
 		if returnCode == 0 {
 			if err = json.NewEncoder(w).Encode(emergency); err != nil {
-				returnCode = 2
+				returnCode = 3
 			}
 		}
 
@@ -358,15 +366,52 @@ func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
 		emergency := new(Emergency)
 		emergency.Id = vestigo.Param(r, "emergencyId")
-		json.NewDecoder(r.Body).Decode(emergency)
 
-		if err = updateEmergencyDB(emergency); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
 			returnCode = 1
 		}
 
 		if returnCode == 0 {
-			if err = json.NewEncoder(w).Encode(emergency); err != nil {
+			if err = updateEmergencyDB(emergency); err != nil {
 				returnCode = 2
+			}
+		}
+
+		if returnCode == 0 {
+			if err = json.NewEncoder(w).Encode(emergency); err != nil {
+				returnCode = 3
+			}
+		}
+
+		// error handling
+		if returnCode != 0 {
+			handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
+		}
+	} else {
+		handleError(3, 403, "Session expired. Please sign in again.", w)
+	}
+}
+
+func updateLocationJSON(w http.ResponseWriter, r *http.Request) {
+	returnCode := 0
+
+	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
+		location := new(Location)
+		emergencyId := vestigo.Param(r, "emergencyId")
+
+		if json.NewDecoder(r.Body).Decode(location); err != nil {
+			returnCode = 1
+		}
+
+		if returnCode == 0 {
+			if err = updateLocationDB(location, emergencyId); err != nil {
+				returnCode = 2
+			}
+		}
+
+		if returnCode == 0 {
+			if err = json.NewEncoder(w).Encode(location); err != nil {
+				returnCode = 3
 			}
 		}
 

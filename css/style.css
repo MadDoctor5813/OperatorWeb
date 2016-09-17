@@ -151,6 +151,7 @@ button.close {
 */
 
 .navbar-top {
+    display: block;
     height: 50px;
     border: none;
     margin: 0;
@@ -184,7 +185,8 @@ button.close {
         right: 10px;
     }
 @media (min-width: 992px) {
-    #navbar-top-layer-2 {
+    .navbar-top {
+        display: none;
         margin-left: 250px;
     }
     .navbar-top li.first {
@@ -211,8 +213,8 @@ button.close {
     height: 100%;
     width: 250px;
     border: none;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
     -ms-overflow-style: none;
     background-color: #fff;
     z-index: 9;
@@ -353,7 +355,7 @@ button.close {
 
 /*
   ========================================
-  12. Sections
+  Sections
   ========================================
 */
 
@@ -379,7 +381,7 @@ section {
 
 /*
   ========================================
-  14. Forms
+  Forms
   ========================================
 */
 
@@ -392,7 +394,7 @@ section {
 
 /*
   ========================================
-  15. Alerts
+  Alerts
   ========================================
 */
 
@@ -406,7 +408,7 @@ section {
 
 /*
   ========================================
-  16. Sign In
+  Sign In
   ========================================
 */
 
