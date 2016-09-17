@@ -6,13 +6,7 @@ function initDataModal(json) {
 	$modal.find('.street').text(json.street);
 	$modal.find('.city').text(json.city + ', ' + json.province);
 	$modal.find('.postal-code').text(json.postal-code);
-	
-	if (json.details != '') {
-		$modal.find('.details').text(json.details);
-	}
-	else {
-		$modal.find('.details').text('No details have been recorded.');
-	}
+	$modal.find('.details').text(json.details);
 	$modal.find('.description').text(json.description);
 	
 	// display image
@@ -25,11 +19,28 @@ function initDataModal(json) {
 	// display map
 }
 
-function clearTable() {    
+function clearModal() {    
     if ($('body').data('autosave-timer')) {
         clearInterval($('body').data('autosave-timer'));
         $('body').removeData('autosave-timer');
     }
 
-    $('#data-table tbody').empty();
+    var $modal = $('#data-modal');
+
+    $modal.find('.date').text('');
+	$modal.find('.time').text('');
+	$modal.find('.street').text('');
+	$modal.find('.city').text('');
+	$modal.find('.postal-code').text('');
+	$modal.find('.details').text('');
+	$modal.find('.description').text('');
+	
+	// clear image
+	
+	$modal.find('.response').text('');
+	$modal.find('.notes').text('');
+	$modal.find('.level #inlineRadio' + json.level).prop('checked', true); // **** EDIT ****
+	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
+
+	// clear map
 }
