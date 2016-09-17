@@ -220,8 +220,6 @@ func viewEmergencyJSON(w http.ResponseWriter, r *http.Request) {
     emergency := new(Emergency)    
     id := vestigo.Param(r, "emergencyId")
 
-    selector := bson.M{"id": id}
-
     if err := loadEmergencyDB(emergency, id); err != nil {
         returnCode = 1
     }
