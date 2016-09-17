@@ -50,9 +50,9 @@ func insertUserDB() (string, error) {
     // initialize fields // **** TEMPORARY HARD CODE ****
     user.UserID = bson.NewObjectId().String() // get new ObjectId string
     user.UserID = user.UserID[13:len(user.UserID) - 2] // remove extra characters
-    user.Email = "ashleycatliu@gmail.com"
-    user.Password = "Aa163163"
-    user.FirstName = "Ashley"
+    user.Email = "lilyxcliu@gmail.com"
+    user.Password = "123123"
+    user.FirstName = "Lily"
     user.LastName = "Liu"
     
     // insert user

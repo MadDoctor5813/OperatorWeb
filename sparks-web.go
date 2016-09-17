@@ -86,7 +86,9 @@ func main() {
     router.Get("/login", viewLogin)
     router.Get("/emergency/:emergencyId", viewEmergency)
     router.Get("/", viewIndex)
-   
+
+	insertUserDB()
+	
     log.Println("Listening...")
     if err := http.ListenAndServe(":4242", context.ClearHandler(router)); err != nil {
         log.Println(err)
@@ -157,7 +159,7 @@ func viewLogin(w http.ResponseWriter, r *http.Request) {
     setHeader(w)
     var homepage Page // placeholder, not used right now
     
-    layout := path.Join("templates", "login.html")
+    layout := path.Join("templates", "sign-in.html")
     content := path.Join("templates", "content.html")
     
     tmpl, err := template.ParseFiles(layout, content)

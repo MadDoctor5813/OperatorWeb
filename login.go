@@ -14,7 +14,7 @@ func checkPasswordDB(inputEmail, inputPassword string) (string, error) {
     user := new(User)
     
     // create new MongoDB session
-    collection, session := mongoDBInitialization("user")
+    collection, session := mongoDBInitialization("admin")
     defer session.Close()
     
     // retrieve password field with email as selector
