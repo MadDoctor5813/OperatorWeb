@@ -1,0 +1,85 @@
+{{define "my-template"}}
+
+<!DOCTYPE html>
+
+<html lang="en">
+	
+{{template "head" .}}
+
+<body>
+
+	<div class="container">
+        <h1>Sign In</h1>
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputEmail" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button id="sign-in" class="btn btn-default">Sign In</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{{template "script" .}}
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			page('/sign-in', viewSignIn);
+			page('*', notFound);
+			page();
+		});
+
+		function viewSignIn() {
+			$('.form-horizontal').on('click', '#sign-in', function(e) {
+				e.preventDefault();
+
+				var data = {
+					email: $('#inputEmail').val(),
+					password: $('#inputPassword').val()
+				}
+
+				var dataJSON = JSON.stringify(data);
+				checkSignInAjax(dataJSON);
+			});
+		}
+
+		function checkSignInAjax(dataJSON) {
+			$.ajax({
+                type: 'POST',
+                url: '/checkLoginInfoJSON',
+                data: dataJSON,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                cache: false
+            }).done(function(json, textStatus, jqXHr) {
+                if (json != '-1') { // password is correct
+                    window.location.href = '/pending';
+                }
+                else {
+                    displayAlertMessage('Wrong password. Try again.');
+                    $('#inputPassword').select();
+                }
+            }).fail(function(jqXHr, textStatus, errorThrown) {
+                handleAjaxError(jqXHr, textStatus);
+            }).always(function() {});
+		}
+	</script>
+	
+</body>
+
+</html>
+
+{{end}}
