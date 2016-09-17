@@ -112,7 +112,7 @@ func deleteEmergencyDB(id string) error {
     defer session.Close()
     
     // find document and delete resume
-    selector := bson.M{"id", id}
+    selector := bson.M{"id": id}
     err := collection.Remove(selector)
     
     return err

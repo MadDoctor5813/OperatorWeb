@@ -81,7 +81,7 @@ func main() {
     router.Get("/loadEmergencyJSON/:emergencyId", loadEmergencyJSON)
     router.Post("/insertEmergencyJSON/:emergencyId", insertEmergencyJSON)
     router.Post("/updateEmergencyJSON/:emergencyId", updateEmergencyJSON)
-    router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyId)
+    router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
  
     // user
     router.Post("/insertUserJSON", insertUserJSON)
@@ -437,65 +437,6 @@ func deleteEmergencyJSON(w http.ResponseWriter, r *http.Request) {
     } else {
         handleError(3, 403, "Session expired. Please sign in again.", w)
     }
-}
-
-/*
-  ========================================
-  User
-  ========================================
-*/
-
-func insertUserJSON(w http.ResponseWriter, r *http.Request) {
-    // **** EDIT ****
-    
-    userID, err := insertUserDB()
-    
-    err = json.NewEncoder(w).Encode(userID)
-    logErrorMessage(err)
-}
-
-func updateUserJSON(w http.ResponseWriter, r *http.Request) {
-    returnCode := 0
-
-    if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-        user := new(User)
-        user.UserID = uID.(string)
-
-        if err := json.NewDecoder(r.Body).Decode(user); err != nil {
-            returnCode = 1
-        }
-
-        if returnCode == 0 {
-            if err := updateUSettings(user); err != nil {
-                returnCode = 2
-            }
-        }
-
-        if returnCode == 0 {
-            if err := updateRContactTypeName(user.UserID, user.FirstName, user.LastName); err != nil {
-                returnCode = 3
-            }
-        }
-
-        if returnCode == 0 {
-            if err := json.NewEncoder(w).Encode(user); err != nil {
-                returnCode = 4
-            }
-        }
-
-        // error handling
-        if returnCode != 0 {
-            handleError(returnCode, errorStatusCode, "User could not be updated at this time.", w)
-        }
-    } else {
-        handleError(3, 403, "Session expired. Please sign in again.", w)
-    }
-}
-
-func deleteUserJSON(w http.ResponseWriter, r *http.Request) {
-    
-    // **** EDIT ****
-    
 }
 
 /*
