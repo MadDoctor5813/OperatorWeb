@@ -80,8 +80,6 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 	collection, session := mongoDBInitialization("emergency")
 	defer session.Close()
 
-	emergency.Category = emergency.Category
-
 	timeEST := time.Now().Add(-4 * time.Hour)
 	emergency.InitTime = timeEST.Format("20060102150405")
 
