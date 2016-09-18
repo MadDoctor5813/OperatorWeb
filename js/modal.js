@@ -87,9 +87,8 @@ function initDataModal(json) {
         	}
         	if (i >= 5) { // all other locations
         		if (json.locations[i].latitude == json.locations[i - 5].latitude
-        			&& json.locations[i].longitude == json.locations[i - 5].longitude) { // if coordinates are the same as coordinates of previous marker, do not set new marker
-        			// console.log(i + ' ' + json.locations[i].latitude + ' ' + json.locations[i - 5].latitude);
-        			// console.log(i + ' ' + json.locations[i].longitude + ' ' + json.locations[i - 5].longitude);
+        			&& json.locations[i].longitude == json.locations[i - 5].longitude) {
+        			// if coordinates are the same as coordinates of previous marker, do not set new marker
         		}
         		else {
         			addMarker(counter.toString(), location, latLng);

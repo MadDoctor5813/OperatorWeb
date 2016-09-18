@@ -116,7 +116,7 @@ func main() {
 	router.Get("/archives", viewAdmin)
 	router.Get("/trash", viewAdmin)
 	router.Get("/sign-in", viewLogin)
-	router.Get("/", viewLogin)
+	router.Get("/", viewAdmin)
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":4243", context.ClearHandler(router)); err != nil {

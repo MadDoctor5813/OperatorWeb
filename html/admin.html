@@ -43,6 +43,9 @@
 		    <li class="trash">
 		        <a href="/trash"><i class="fa fa-trash-o"></i>Trash</a>
 		    </li>
+		    <li class="sign-in">
+				<a href="/sign-in"><i class="fa fa-sign-in"></i>Sign In</a>
+		    </li>
 		    <li class="sign-out">
 		        <a href="/sign-out"><i class="fa fa-sign-out"></i>Sign Out</a>
 		    </li>
@@ -113,8 +116,8 @@
 						<div class="form-group">
 							<div class="col-sm-3 control-label">Image</div>
 							<div class="col-sm-9 image">
-								<img>
 								<span></span>
+								<img>
 							</div>
 						</div>
 						<div class="form-group">
@@ -181,6 +184,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-default exit" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary save" data-dismiss="modal">Save</button>
 				</div>
 			</div>
@@ -200,7 +204,9 @@
 			page('/complete', viewEmergencies);
 			page('/archives', viewEmergencies);
 			page('/trash', viewEmergencies);
+			page('/sign-in', signIn);
 			page('/sign-out', signOut);
+			page('/', viewEmergencies);
 			page('*', notFound);
 			page();
 		});
@@ -256,6 +262,7 @@
 			var title = '';
 
 			switch (ctx.pathname) {
+				case '/':
 				case '/pending':
 					globalEmergencies = 1;
 					title = 'Pending';
@@ -373,6 +380,10 @@
 	        }).fail(function(jqXHr, textStatus, errorThrown) {
 	            handleAjaxError(jqXHr, textStatus);
 	        }).always(function() {});
+		}
+
+		function signIn() {
+	        window.location.href = 'http://10.21.165.134:4243/sign-in';
 		}
 
 		function signOut() {
