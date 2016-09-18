@@ -3,11 +3,10 @@ package main
 import (
 	"encoding/json"
 	"html/template"
-	"image"
-	"image/jpeg"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"strconv"
 	"strings"
@@ -19,7 +18,7 @@ import (
 )
 
 type Page struct {
-	Name string
+	Viewer string
 }
 
 type Error struct {
@@ -135,7 +134,7 @@ func viewAdmin(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
 	setHeader(w)
-	var homepage Page // placeholder, not used right now
+	page := new(Page)
 
 	layout := path.Join("html", "admin.html")
 	content := path.Join("html", "content.html")
@@ -146,7 +145,7 @@ func viewAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if returnCode == 0 {
-		if err := tmpl.ExecuteTemplate(w, "my-template", homepage); err != nil {
+		if err := tmpl.ExecuteTemplate(w, "my-template", page); err != nil {
 			returnCode = 2
 		}
 	}
@@ -161,7 +160,7 @@ func viewLogin(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
 	setHeader(w)
-	var homepage Page // placeholder, not used right now
+	var homepage Page
 
 	layout := path.Join("html", "sign-in.html")
 	content := path.Join("html", "content.html")
@@ -282,39 +281,35 @@ func deleteSession(w http.ResponseWriter, r *http.Request) error {
 func loadEmergenciesJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
-	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
-		var statusInt int
-		var err error
+	var statusInt int
+	var err error
 
-		emergencies := new(Emergencies)
+	emergencies := new(Emergencies)
 
-		statusStr := vestigo.Param(r, "status")
-		if statusInt, err = strconv.Atoi(statusStr); err != nil {
+	statusStr := vestigo.Param(r, "status")
+	if statusInt, err = strconv.Atoi(statusStr); err != nil {
+		returnCode = 1
+	}
+
+	if returnCode == 0 {
+		if err = loadEmergenciesDB(&emergencies.Data, statusInt); err != nil {
 			returnCode = 1
 		}
+	}
 
-		if returnCode == 0 {
-			if err = loadEmergenciesDB(&emergencies.Data, statusInt); err != nil {
-				returnCode = 1
-			}
+	if returnCode == 0 {
+		emergencies.Draw = 1
+		emergencies.RecordsTotal = len(emergencies.Data)
+		emergencies.RecordsFiltered = len(emergencies.Data)
+
+		if err = json.NewEncoder(w).Encode(emergencies); err != nil {
+			returnCode = 2
 		}
+	}
 
-		if returnCode == 0 {
-			emergencies.Draw = 1
-			emergencies.RecordsTotal = len(emergencies.Data)
-			emergencies.RecordsFiltered = len(emergencies.Data)
-
-			if err = json.NewEncoder(w).Encode(emergencies); err != nil {
-				returnCode = 2
-			}
-		}
-
-		// error handling
-		if returnCode != 0 {
-			handleError(returnCode, errorStatusCode, "Emergencies could not be loaded at this time.", w)
-		}
-	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+	// error handling
+	if returnCode != 0 {
+		handleError(returnCode, errorStatusCode, "Emergencies could not be loaded at this time.", w)
 	}
 }
 
@@ -424,7 +419,9 @@ func updateEmergencyAdminJSON(w http.ResponseWriter, r *http.Request) {
 			handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
 		}
 	} else {
-		handleError(3, 403, "Session expired. Please sign in again.", w)
+		if err := json.NewEncoder(w).Encode(false); err != nil {
+			log.Println(err)
+		}
 	}
 }
 
@@ -483,28 +480,24 @@ func deleteEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 
 func uploadImage(w http.ResponseWriter, r *http.Request) {
 	fileName := vestigo.Param(r, "fileName")
-	filePath := "/img/" + fileName
+	filePath := "./img/" + fileName + ".jpg"
 
-	err := saveImage(r, filePath) // save image in folder
-	logErrorMessage(err)
+	if err := saveImage(r, filePath); err != nil { // save image in folder
+		log.Println(err)
+	}
 }
 
 func saveImage(r *http.Request, filePath string) error {
 	var err error
 
-	file, _, err := r.FormFile("uploadFile")
-	logErrorMessage(err)
-	defer file.Close()
+	longBuf := make([]byte, 1000000000) // minimal read size bigger than io.Reader stream
+	if _, err = io.ReadFull(r.Body, longBuf); err != nil {
+		log.Println(err)
+	}
 
-	originalImage, _, err := image.Decode(file) // decode file
-	logErrorMessage(err)
-
-	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666) // open file
-	logErrorMessage(err)
-	defer f.Close()
-
-	err = jpeg.Encode(f, originalImage, &jpeg.Options{100}) // encode image
-	logErrorMessage(err)
+	if err = ioutil.WriteFile(filePath, longBuf, 0644); err != nil {
+		log.Println(err)
+	}
 
 	return err
 }
