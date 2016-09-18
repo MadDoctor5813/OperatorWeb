@@ -400,6 +400,9 @@ section {
   ========================================
 */
 
+#data-modal .modal-title {
+    font-weight: 400;
+}
 #data-modal .modal-body {
     padding-bottom: 0;
 }

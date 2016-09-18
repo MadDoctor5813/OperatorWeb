@@ -44,7 +44,7 @@ function initDataModal(json) {
 	
 	// display image
 	if (json.imageName != '') {
-    	$modal.find('.image img').attr('src', '/img/' + json.imageName + ".jpg");
+    	$modal.find('.image img').attr('src', '/img/' + json.imageName);
     }
     else {
     	$modal.find('.image span').text('No image has been uploaded.');
