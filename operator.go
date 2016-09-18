@@ -51,8 +51,6 @@ func main() {
 		MaxAge:           3600 * time.Second,
 	})
 
-	// router.Get("/sandbox/*", staticFile)
-
 	fileServerCSS := http.FileServer(http.Dir("css"))
 	router.Get("/css/*", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Vary", "Accept-Encoding")
