@@ -1,11 +1,6 @@
 function initDataModal(json) {
 	var $modal = $('#data-modal');
 
-	console.log('street: ' + json.street);
-	console.log('city: ' + json.city);
-	console.log('province: ' + json.province);
-	console.log('postal code: ' + json.postalCode);
-
 	$modal.find('.category').text(json.category);
 	$modal.find('.date').text(formatDate(json.initTime));
 	$modal.find('.time').text(formatTime(json.initTime));

@@ -35,7 +35,7 @@ type Emergencies struct {
 }
 
 const (
-	errorStatusCode = 398
+	errorStatusCode = 555
 	serverName      = "GWS"
 )
 
@@ -106,7 +106,8 @@ func main() {
 	router.Get("/loadEmergenciesJSON/:status", loadEmergenciesJSON)
 	router.Get("/loadEmergencyJSON/:emergencyId", loadEmergencyJSON)
 	router.Post("/insertEmergencyJSON", insertEmergencyJSON)
-	router.Post("/updateEmergencyJSON/:emergencyId/:permission", updateEmergencyJSON)
+	router.Post("/updateEmergencyUserJSON/:emergencyId", updateEmergencyUserJSON)
+	router.Post("/updateEmergencyAdminJSON/:emergencyId", updateEmergencyAdminJSON)
 	router.Post("/updateLocationJSON/:emergencyId", updateLocationJSON)
 	router.Delete("/deleteEmergencyId/:emergencyId", deleteEmergencyJSON)
 	router.Post("/uploadImage/:fileName", uploadImage)
@@ -369,26 +370,19 @@ func insertEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
+func updateEmergencyUserJSON(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
 	emergency := new(Emergency)
 	emergency.Id = vestigo.Param(r, "emergencyId")
-	permission := vestigo.Param(r, "permission")
 
 	if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
 		returnCode = 1
 	}
 
 	if returnCode == 0 {
-		if permission == "user" {
-			if err := updateEmergencyDBUser(emergency); err != nil {
-				returnCode = 2
-			}
-		} else if permission == "admin" {
-			if err := updateEmergencyDBAdmin(emergency); err != nil {
-				returnCode = 2
-			}
+		if err := updateEmergencyDBUser(emergency); err != nil {
+			returnCode = 2
 		}
 	}
 
@@ -401,6 +395,38 @@ func updateEmergencyJSON(w http.ResponseWriter, r *http.Request) {
 	// error handling
 	if returnCode != 0 {
 		handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
+	}
+}
+
+func updateEmergencyAdminJSON(w http.ResponseWriter, r *http.Request) {
+	returnCode := 0
+
+	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
+		emergency := new(Emergency)
+		emergency.Id = vestigo.Param(r, "emergencyId")
+
+		if err := json.NewDecoder(r.Body).Decode(emergency); err != nil {
+			returnCode = 1
+		}
+
+		if returnCode == 0 {
+			if err := updateEmergencyDBAdmin(emergency); err != nil {
+				returnCode = 2
+			}
+		}
+
+		if returnCode == 0 {
+			if err := json.NewEncoder(w).Encode(emergency); err != nil {
+				returnCode = 3
+			}
+		}
+
+		// error handling
+		if returnCode != 0 {
+			handleError(returnCode, errorStatusCode, "Emergency could not be updated at this time.", w)
+		}
+	} else {
+		handleError(3, 403, "Session expired. Please sign in again.", w)
 	}
 }
 

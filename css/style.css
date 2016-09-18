@@ -350,6 +350,7 @@ section {
     color: #333;
 }
     section h1 {
+        font-weight: 400;
         font-size: 40px;
         margin-bottom: 20px;
     }
@@ -423,7 +424,7 @@ section {
     margin-bottom: 0;
 }
 textarea.form-control {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 /*

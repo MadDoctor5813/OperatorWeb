@@ -82,9 +82,8 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 
 	emergency.Category = emergency.Category
 
-	location, err := time.LoadLocation("EST")
-	logErrorMessage(err)
-	emergency.InitTime = time.Now().In(location).Format("20060102150405")
+	timeEST := time.Now().Add(-4 * time.Hour)
+	emergency.InitTime = timeEST.Format("20060102150405")
 
 	emergency.Id = bson.NewObjectId().String()
 	emergency.Id = emergency.Id[13 : len(emergency.Id)-2]
@@ -92,7 +91,7 @@ func insertEmergencyDB(emergency *Emergency) (string, error) {
 	emergency.Level = 0
 
 	// insert resume
-	err = collection.Insert(emergency)
+	err := collection.Insert(emergency)
 	logErrorMessage(err)
 
 	return emergency.Id, err
@@ -139,14 +138,13 @@ func updateLocationDB(location *Location, emergencyId string) error {
 
 	selector := bson.M{"id": emergencyId}
 
-	loc, err := time.LoadLocation("EST")
-	logErrorMessage(err)
-	location.Time = time.Now().In(loc).Format("20060102150405")
+	timeEST := time.Now().Add(-4 * time.Hour)
+	location.Time = timeEST.Format("20060102150405")
 
 	change := bson.M{"locations": bson.M{"latitude": location.Latitude, "longitude": location.Longitude, "street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode, "time": location.Time}}
 	update := bson.M{"$addToSet": &change}
 
-	err = collection.Update(selector, update)
+	err := collection.Update(selector, update)
 	logErrorMessage(err)
 
 	change = bson.M{"street": location.Street, "city": location.City, "province": location.Province, "postalcode": location.PostalCode}

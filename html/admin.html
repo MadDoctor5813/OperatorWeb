@@ -307,7 +307,7 @@
 		function updateEmergencyAjax(dataJSON) {
 			$.ajax({
 	            type: 'POST',
-	            url: '/updateEmergencyJSON/' + globalEmergency + '/admin',
+	            url: '/updateEmergencyAdminJSON/' + globalEmergency,
 	            data: dataJSON,
 	            contentType: 'application/json; charset=utf-8',
 	            dataType: 'json',

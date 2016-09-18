@@ -1,4 +1,6 @@
 function initDataTable(json) {
+    $.fn.dataTable.moment('h:m:s A');
+    
 	$('#data-table').DataTable({
 		'dataSrc': '',
 		'destroy': true,
