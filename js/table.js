@@ -1,6 +1,6 @@
 function initDataTable(json) {
     $.fn.dataTable.moment('h:m:s A');
-    
+
 	$('#data-table').DataTable({
 		'dataSrc': '',
 		'destroy': true,
@@ -105,6 +105,8 @@ function clearTable() {
         case 5:
             link = '/trash';
             break;
+        default:
+            console.log('Switch global emergencies case not matched.');
     }
     
     // synchronize side menu with url
@@ -125,6 +127,7 @@ function clearTable() {
     $('#page-content-wrapper').removeClass('toggled');
     $('#sidebar-backdrop').remove();
 
+    $('#data-table').removeClass('initialized');
     $('#data-table tbody').empty();
 }
 

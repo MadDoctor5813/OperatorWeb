@@ -138,7 +138,7 @@ button.close {
     border: none;
     margin: 0;
     z-index: 10;
-    background-color: rgba(248, 248, 248, .8); /* **** OPACITY DOESN'T WORK IN DASHBOARD **** */
+    background-color: rgba(248, 248, 248, .8);
 }
 .navbar-top li {
     position: absolute;
@@ -155,7 +155,7 @@ button.close {
     .navbar-top li.first {
         width: 40px;
         left: 10px;
-        z-index: 11; /* **** TEMPORARY HACK **** */
+        z-index: 11;
     }
     .navbar-top li.second {
         left: 50px;
@@ -382,6 +382,9 @@ section {
 #data-table th:active,
 #data-table td:active {
     outline: none;
+}
+#data-table_info {
+    display: none;
 }
 
 /*
