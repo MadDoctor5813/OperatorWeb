@@ -5,7 +5,7 @@ function initDataTable(json) {
 		'dataSrc': '',
 		'destroy': true,
 		'info': false,
-		'order': [[5, 'asc'], [6, 'asc']],
+		'order': [[5, 'asc']],
 		'ordering': true,
 		'paging': false,
 		'processing': false,
