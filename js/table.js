@@ -14,7 +14,7 @@ function initDataTable(json) {
 		'stateSave': true,
 
 		'ajax': function(data, callback, settings) {
-			clearTable();
+            $('#data-table tbody').empty();
 			callback(json);
 		},
 
@@ -128,7 +128,7 @@ function clearTable() {
     $('#sidebar-backdrop').remove();
 
     $('#data-table').removeClass('initialized');
-    $('#data-table tbody').empty();
+    clearInterval(emergenciesTimerID);
 }
 
 function emergenciesEventHandler() {

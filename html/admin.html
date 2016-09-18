@@ -301,15 +301,13 @@
 					}
 				}
 				else { // new page
-					//if (!jQuery.isEmptyObject(json)) { // contains data
-						initDataTable(json);
-						$table.data('info', json.data);
-					//}
+					initDataTable(json);
+					$table.data('info', json.data);
 
 					$table.addClass('initialized');
 			    	emergenciesTimerID = setInterval(function() { // set up auto-refresh timer
 				    	loadEmergenciesAjax();
-				    }, 3000);             
+				    }, 3000);
 				}
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
