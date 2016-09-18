@@ -114,6 +114,7 @@
 							<div class="col-sm-3 control-label">Image</div>
 							<div class="col-sm-9 image">
 								<img>
+								<span></span>
 							</div>
 						</div>
 						<div class="form-group">
@@ -296,13 +297,13 @@
 
             	if ($table.hasClass('initialized')) { // same page
 					if (JSON.stringify(prevData) != JSON.stringify(json.data)) { // new data
-						initDataTable(json);
 						$table.data('info', json.data);
+						initDataTable(json);
 					}
 				}
 				else { // new page
-					initDataTable(json);
 					$table.data('info', json.data);
+					initDataTable(json);
 
 					$table.addClass('initialized');
 			    	emergenciesTimerID = setInterval(function() { // set up auto-refresh timer
@@ -326,15 +327,15 @@
 
             	if ($modal.hasClass('initialized')) { // same modal
             		if (JSON.stringify(prevData) != JSON.stringify(json)) { // new data
-            			initDataModal(json);
+						console.log('same modal, new data');
             			$modal.data('info', json);
+            			initDataModal(json);
             		}
 			    }
 			    else { // new modal
-			    	if (!jQuery.isEmptyObject(json)) { // contains data
-			    		initDataModal(json);
-			    		$modal.data('info', json);
-			    	}
+			    	console.log('new modal');
+		    		$modal.data('info', json);
+		    		initDataModal(json);
 
 			    	$modal.addClass('initialized');
 			    	emergencyTimerID = setInterval(function() { // set up auto-refresh timer
@@ -344,6 +345,19 @@
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
             }).always(function() {});
+		}
+
+		function updateEmergency() {
+			var $modal = $('#data-modal');
+
+			var data = {
+				response: $modal.find('.response').text(),
+				notes: $modal.find('.notes').text(),
+				level: parseInt($modal.find('.level input:radio:checked').val()),
+				status: parseInt($modal.find('.status input:radio:checked').val())
+			}
+
+			updateEmergencyAjax(JSON.stringify(data));
 		}
 
 		function updateEmergencyAjax(dataJSON) {

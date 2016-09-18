@@ -1,39 +1,101 @@
 function initDataModal(json) {
 	var $modal = $('#data-modal');
 
+	// date and time
 	$modal.find('.category').text(json.category);
 	$modal.find('.date').text(formatDate(json.initTime));
 	$modal.find('.time').text(formatTime(json.initTime));
 
-	$.each(json.locations, function(i, location) {
+	// address
+	var size = json.locations.length;
+	var cityProvince = '';
+	if (json.locations[size - 1].street != '') {
 		$modal.find('.street').text(location.street);
-		$modal.find('.city').text(location.city + ', ' + location.province);
-		$modal.find('.postal-code').text(location.postalCode);
-	});
-
-	$modal.find('.details').text(json.details);
-	$modal.find('.description').text(json.description);
+	}
+	if (json.locations[size - 1].city != '') {
+		cityProvince = json.locations[size - 1].city;
+	}
+	if (json.locations[size - 1].province != '') {
+		if (cityProvince == '') { // no city
+			cityProvince = json.locations[size - 1].province;
+		}
+		else { // yes city
+			cityProvince += ', ' + json.locations[size - 1].province;
+		}	
+	}
+	$modal.find('.city').text(cityProvince);
+	if (json.locations[size - 1].postalCode != '') {
+		$modal.find('.postal-code').text(json.locations[size - 1].postalCode);
+	}
+	
+	// user info: details and description
+	if (json.details != '') {
+		$modal.find('.details').text(json.details);
+	}
+	else {
+		$modal.find('.details').text('No details have been recorded.');
+	}
+	if (json.description != '') {
+		$modal.find('.description').text(json.description);
+	}
+	else {
+		$modal.find('.description').text('No description has been recorded.');
+	}
 	
 	// display image
-    $modal.find('.image img').attr('src', '/img/' + json.imageName);
+	if (json.imageName != '') {
+    	$modal.find('.image img').attr('src', '/img/' + json.imageName + ".jpg");
+    }
+    else {
+    	$modal.find('.image span').text('No image has been uploaded.');
+    }
 	
-	$modal.find('.response').text(json.response);
-	$modal.find('.notes').text(json.notes);
+	// admin info: response and notes
+	if (json.response != '') {
+		$modal.find('.response').text(json.response);
+	}
+	else {
+		$modal.find('.response').text('No response has been recorded.');
+	}
+	if (json.notes != '') {
+		$modal.find('.notes').text(json.notes);
+	}
+	else {
+		$modal.find('.notes').text('No notes have been recorded.');
+	}
+
+	// level and status
 	$modal.find('.level #inlineRadio' + json.level).prop('checked', true);
 	$modal.find('.status #optionsRadios' + json.status).prop('checked', true);
 
 	// display map
+	deleteMarkers();
+	flightPlanCoordinates = [];
 	bounds = new google.maps.LatLngBounds();
 
+	var counter = 1;
 	$.each(json.locations, function(i, location) {
 		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
         
         bounds.extend(latLng);
         flightPlanCoordinates.push(latLng);
 
-        if (i % 5 == 0) {
-        	var index = (i / 5 + 1).toString();
-        	addMarker(index, location, latLng);
+        if (i % 5 == 0) { // for every fifth location
+        	if (i == 0) { // first location
+        		addMarker(counter.toString(), location, latLng);
+        		counter++;
+        	}
+        	if (i >= 5) { // all other locations
+        		if (json.locations[i].latitude == json.locations[i - 5].latitude
+        			&& json.locations[i].longitude == json.locations[i - 5].longitude) { // if coordinates are the same as coordinates of previous marker, do not set new marker
+        			// console.log(i + ' ' + json.locations[i].latitude + ' ' + json.locations[i - 5].latitude);
+        			// console.log(i + ' ' + json.locations[i].longitude + ' ' + json.locations[i - 5].longitude);
+        		}
+        		else {
+        			addMarker(counter.toString(), location, latLng);
+        			counter++;
+        		}
+			}
         }
 	});
 
@@ -63,6 +125,7 @@ function clearModal() {
 	
 	// clear image
 	$modal.find('.image img').attr('src', '');
+	$modal.find('.image span').text('');
 	
 	$modal.find('.response').text('');
 	$modal.find('.notes').text('');
@@ -108,16 +171,7 @@ function emergencyEventHandler() {
 	});
 
 	$('#data-modal').on('click', 'button.save', function() {
-		var $modal = $('#data-modal');
-
-		var data = {
-			response: $modal.find('.response').text(),
-			notes: $modal.find('.notes').text(),
-			level: parseInt($modal.find('.level input:radio:checked').val()),
-			status: parseInt($modal.find('.status input:radio:checked').val())
-		}
-
-		updateEmergencyAjax(JSON.stringify(data));
+		updateEmergency();
 	});
 }
 

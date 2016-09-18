@@ -133,8 +133,15 @@ func main() {
 func viewAdmin(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
+	var page Page
+
+	if uID, err := readSession("userID", w, r); err == nil && uID != nil {
+		page.Viewer = "admin"
+	} else {
+		page.Viewer = "user"
+	}
+
 	setHeader(w)
-	page := new(Page)
 
 	layout := path.Join("html", "admin.html")
 	content := path.Join("html", "content.html")
@@ -160,7 +167,7 @@ func viewLogin(w http.ResponseWriter, r *http.Request) {
 	returnCode := 0
 
 	setHeader(w)
-	var homepage Page
+	var page Page
 
 	layout := path.Join("html", "sign-in.html")
 	content := path.Join("html", "content.html")
@@ -171,7 +178,7 @@ func viewLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if returnCode == 0 {
-		if err := tmpl.ExecuteTemplate(w, "my-template", homepage); err != nil {
+		if err := tmpl.ExecuteTemplate(w, "my-template", page); err != nil {
 			returnCode = 2
 		}
 	}
@@ -490,7 +497,7 @@ func uploadImage(w http.ResponseWriter, r *http.Request) {
 func saveImage(r *http.Request, filePath string) error {
 	var err error
 
-	longBuf := make([]byte, 1000000000) // minimal read size bigger than io.Reader stream
+	longBuf := make([]byte, 1000000) // max size: 1MB
 	if _, err = io.ReadFull(r.Body, longBuf); err != nil {
 		log.Println(err)
 	}
