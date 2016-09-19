@@ -216,6 +216,19 @@
 		var emergenciesTimerID = '';
 		var emergencyTimerID = '';
 
+		function initMap() {
+			map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 43.471867, lng: -80.5415358},
+				zoom: 16
+			});
+
+			infowindow = new google.maps.InfoWindow();
+
+			map.addListener('click', function() {
+				infowindow.close();
+		    });
+		}
+
 		function eventHandler() {
 		    $('body').on('click', '[data-uw-action]', function(e) {
 		        e.preventDefault();
@@ -315,7 +328,7 @@
 					$table.addClass('initialized');
 			    	emergenciesTimerID = setInterval(function() { // set up auto-refresh timer
 				    	loadEmergenciesAjax();
-				    }, 3000);
+				    }, 1000);
 				}
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);
@@ -347,7 +360,7 @@
 			    	$modal.addClass('initialized');
 			    	emergencyTimerID = setInterval(function() { // set up auto-refresh timer
 				    	loadEmergencyAjax();
-				    }, 3000);
+				    }, 1000);
 			    }
             }).fail(function(jqXHr, textStatus, errorThrown) {
                 handleAjaxError(jqXHr, textStatus);

@@ -10,7 +10,7 @@ function initDataModal(json) {
 	var size = json.locations.length;
 	var cityProvince = '';
 	if (json.locations[size - 1].street != '') {
-		$modal.find('.street').text(location.street);
+		$modal.find('.street').text(json.locations[size - 1].street);
 	}
 	if (json.locations[size - 1].city != '') {
 		cityProvince = json.locations[size - 1].city;
@@ -180,19 +180,6 @@ var bounds;
 var infowindow;
 var flightPath;
 var flightPlanCoordinates = [];
-
-function initMap() {
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 43.471867, lng: -80.5415358},
-		zoom: 16
-	});
-
-	infowindow = new google.maps.InfoWindow();
-
-	map.addListener('click', function() {
-		infowindow.close();
-    });
-}
 
 function zoomAndCenter() {
 	google.maps.event.trigger(map, 'resize');
